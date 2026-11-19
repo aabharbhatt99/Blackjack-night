@@ -1,0 +1,8 @@
+{
+  "name": "blackjack-night",
+  "main": "src/worker.js",
+  "compatibility_date": "2025-01-01",
+  "assets": { "directory": "./public" },
+  "durable_objects": { "bindings": [{ "name": "TABLE", "class_name": "Table" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Table"] }]
+}
