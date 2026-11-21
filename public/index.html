@@ -2,6 +2,12 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Blackjack Night</title>
+<meta name="theme-color" content="#0b1210">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -11,7 +17,13 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font:15px/1.
 button{font-family:inherit;cursor:pointer}
 button:disabled{opacity:.35;cursor:not-allowed}
 .hd{font-family:'Space Grotesk',sans-serif}
-#app{height:100dvh}
+#app{height:100dvh;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+/* fullscreen toggle */
+.fsb{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;flex:none;border-radius:12px;border:1px solid var(--line2);background:rgba(11,18,16,.55);color:var(--fg);padding:0}
+.fsb:hover{border-color:var(--gold);color:var(--gold2)}
+.nofs .fsb{display:none}
+.hero .fsb{position:absolute;top:16px;right:16px;z-index:2}
+.topline .fsb{display:none}
 
 /* ---------- entry: name once, then Create or Join ---------- */
 .entry{height:100%;display:flex;overflow:auto}
@@ -77,6 +89,7 @@ button:disabled{opacity:.35;cursor:not-allowed}
   .fan{position:absolute;right:-24px;top:34px;transform:scale(.55);transform-origin:top right}
   .hero h2{font-size:26px;max-width:190px}.hero p,.facts{display:none}.hero .sub2{display:block;max-width:165px}
   .entry.step2 .hero{display:none}
+  .entry.step2 .topline .fsb{display:inline-flex}.nofs .entry.step2 .topline .fsb{display:none}
   .entry.step2 .mlogo{display:block;flex:1;font:700 17px 'Space Grotesk',sans-serif}.mlogo span{color:var(--gold)}
   .form{flex:1;align-items:stretch;padding:16px}
   .form .box{gap:20px;max-width:none}
@@ -501,6 +514,8 @@ let step="home",mode=ls.get("bj-mode")==="computer"?"computer":"friends",chips=+
 const CHIPS=[100,250,500,1000,5000];
 if(!CHIPS.includes(chips))chips=500;
 const ico={
+  fsOn:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5"/><path d="M20 9V4h-5"/><path d="M4 15v5h5"/><path d="M20 15v5h-5"/></svg>`,
+  fsOff:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4v5H4"/><path d="M15 4v5h5"/><path d="M9 20v-5H4"/><path d="M15 20v-5h5"/></svg>`,
   plus:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1e1600" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>`,
   enter:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#eef3ef" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>`,
   chev:c=>`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>`,
@@ -512,7 +527,7 @@ const ico={
 function renderEntry(){
   const name=ls.get("bj-name")||"",errH=err?`<p class="err" role="alert">${esc(err)}</p>`:"";
   if(step!=="home"&&!name)step="home";
-  const hero=`<section class="hero" aria-label="Blackjack Night"><div class="felt2">
+  const hero=`<section class="hero" aria-label="Blackjack Night"><div class="felt2">${fsBtn()}
     <div class="logo"><span>♠</span>Blackjack Night</div>
     <div class="fan" aria-hidden="true"><div class="fc bk" style="left:30px;top:40px;transform:rotate(-16deg)"></div>
       <div class="fc" style="left:98px;top:18px;transform:rotate(-2deg)"><span class="r">A</span><span class="s">♠</span><span class="c">♠</span></div>
@@ -525,7 +540,7 @@ function renderEntry(){
   </div></section>`;
   const top=`<div class="topline"><button class="bkbtn" id="back" aria-label="Back">${ico.back}<span class="bt">Back</span></button>
     <div class="mlogo"><span>♠</span> Blackjack Night</div>
-    <div class="as">Playing as <b>${esc(name)}</b><span class="chg"> · <button class="linkb" id="chg">Change</button></span></div></div>`;
+    <div class="as">Playing as <b>${esc(name)}</b><span class="chg"> · <button class="linkb" id="chg">Change</button></span></div>${fsBtn()}</div>`;
   let body;
   if(step==="create"){
     const solo=mode==="computer";
@@ -580,7 +595,7 @@ let joinCode="";
 function buildShell(){
   shell=true;
   $("#app").innerHTML=`<div class="game">
-  <section class="tablewrap" aria-label="Table"><div class="topbar"><div><b id="rnd"></b><span>Dealer passes clockwise ↻</span></div></div>
+  <section class="tablewrap" aria-label="Table"><div class="topbar"><div><b id="rnd"></b><span>Dealer passes clockwise ↻</span></div>${fsBtn()}</div>
   <div class="stagebox"><div class="stage" id="stage">
     <div class="rail"><div class="felt"></div>
       <svg class="feltsvg" viewBox="0 0 1000 620" aria-hidden="true"><defs><path id="arcA" d="M 200 250 Q 500 480 800 250"/><path id="arcB" d="M 260 300 Q 500 490 740 300"/></defs>
@@ -604,6 +619,27 @@ function fit(){
   d.style.transform=`translateX(-50%) scale(${Math.max(s,.8)})`;
 }
 addEventListener("resize",fit);
+
+// ---------- fullscreen ----------
+const fsEl=()=>document.fullscreenElement||document.webkitFullscreenElement;
+const fsOK=!!(document.fullscreenEnabled||document.webkitFullscreenEnabled);
+if(!fsOK)document.documentElement.classList.add("nofs"); // e.g. iPhone Safari: use Add to Home Screen instead
+function fsBtn(){const on=!!fsEl();return `<button class="fsb" data-fs aria-label="${on?"Exit":"Enter"} fullscreen" title="${on?"Exit":"Enter"} fullscreen (F)">${on?ico.fsOff:ico.fsOn}</button>`}
+function toggleFS(){
+  if(!fsOK)return;
+  const d=document,el=d.documentElement;
+  try{
+    const r=fsEl()?(d.exitFullscreen||d.webkitExitFullscreen).call(d):(el.requestFullscreen||el.webkitRequestFullscreen).call(el,{navigationUI:"hide"});
+    if(r&&r.catch)r.catch(()=>toast("Fullscreen isn’t available here"));
+  }catch(e){toast("Fullscreen isn’t available here")}
+}
+function syncFS(){
+  document.querySelectorAll("[data-fs]").forEach(b=>{b.outerHTML=fsBtn()});
+  requestAnimationFrame(fit); // the stage rescales to the new viewport
+}
+document.addEventListener("fullscreenchange",syncFS);
+document.addEventListener("webkitfullscreenchange",syncFS);
+document.addEventListener("click",e=>{if(e.target.closest("[data-fs]"))toggleFS()});
 
 function renderTable(){
   $("#rnd").textContent=S.phase==="lobby"?"Lobby":gameOver()?"Game over":`Round ${S.round}`;
@@ -887,6 +923,7 @@ function renderConsole(){
   document.querySelectorAll("[data-bet]").forEach(b=>b.onclick=()=>send({t:"bet",amount:+b.dataset.bet}));
 }
 addEventListener("keydown",e=>{
+  if((e.key==="f"||e.key==="F")&&!e.repeat&&!e.ctrlKey&&!e.metaKey&&!e.altKey&&!/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)){toggleFS();return}
   if(!S||S.phase!=="playing"||S.turn!==S.me||e.target.tagName==="INPUT"||e.repeat)return;
   if(e.key==="h"||e.key==="H")send({t:"hit"});
   if(e.key==="s"||e.key==="S"){const me=P(S.me);if(!(S.dealer===S.me&&val(me.hand)<17))send({t:"stand"})}
