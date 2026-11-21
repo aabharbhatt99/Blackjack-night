@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Phone create</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0b1210}
+a{color:#e3b84f}a:hover{color:#f3d27e}
+.opt{flex:1;display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:12px;text-decoration:none;color:#a9bcb1;font-size:12px}
+.opt b{font:700 15px 'Space Grotesk',sans-serif;color:#eef3ef}
+.opt.on{background:#e3b84f;color:#3a2c05}.opt.on b{color:#1e1600}.opt.on:hover{color:#3a2c05}
+.pill{height:46px;border-radius:12px;border:1px solid #2c3d34;background:#121a17;color:#eef3ef;font:700 15px 'Space Grotesk',sans-serif;padding:0}
+.pill.on{border:2px solid #e3b84f;background:#1a1406;color:#f3d27e}
+.back{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:12px;border:1px solid #2c3d34;color:#eef3ef;text-decoration:none}
+.go{display:flex;align-items:center;justify-content:center;gap:10px;height:56px;border-radius:16px;background:#e3b84f;color:#1e1600;font:700 17px 'Space Grotesk',sans-serif;text-decoration:none;box-shadow:0 8px 22px rgba(227,184,79,.28)}
+.go:hover{color:#1e1600}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 16px; display: flex; flex-direction: column; gap: 20px; background: #0b1210; color: #eef3ef; font-family: Inter, system-ui, sans-serif; overflow: hidden;">
+
+  <div style="display: flex; align-items: center; gap: 12px;">
+    <a class="back" href="PhoneHome.dc.html" aria-label="Back"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></a>
+    <div style="flex: 1; font: 700 17px 'Space Grotesk', sans-serif;"><span style="color: #e3b84f;">♠</span> Blackjack Night</div>
+    <div style="font-size: 13px; color: #a9bcb1;">as <b style="color: #f3d27e;">Kabir</b></div>
+  </div>
+
+  <div>
+    <div style="font-size: 12px; letter-spacing: .12em; color: #e3b84f; font-weight: 700;">STEP 2 OF 2 · CREATE</div>
+    <h1 style="margin: 4px 0 0; font: 700 28px/1.15 'Space Grotesk', sans-serif;">Set up your table</h1>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 8px;">
+    <div style="font-size: 14px; font-weight: 600; color: #a9bcb1;">Who are you playing with?</div>
+    <div style="display: flex; gap: 4px; padding: 4px; border-radius: 16px; background: #121a17; border: 1px solid #2c3d34;">
+      <a class="opt" href="PhoneCreate.dc.html"><b>Friends</b>Share a code</a>
+      <a class="opt on" href="PhoneCreate.dc.html" aria-current="true"><b>Computer</b>Private table</a>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 8px;">
+    <div style="font-size: 14px; font-weight: 600; color: #a9bcb1;">Starting chips for everyone</div>
+    <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px;">
+      <button class="pill">100</button>
+      <button class="pill">250</button>
+      <button class="pill on" aria-pressed="true">500</button>
+      <button class="pill">1000</button>
+      <button class="pill">5000</button>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 8px;">
+    <div style="display: flex; justify-content: space-between; align-items: baseline;">
+      <div style="font-size: 14px; font-weight: 600; color: #a9bcb1;">Players at the table</div>
+      <div style="font-size: 13px; color: #a9bcb1;">You + <b style="color: #f3d27e;">3 computers</b></div>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px;">
+      <button class="pill">2</button>
+      <button class="pill">3</button>
+      <button class="pill on" aria-pressed="true">4</button>
+      <button class="pill">5</button>
+      <button class="pill">6</button>
+      <button class="pill">7</button>
+      <button class="pill">8</button>
+      <button class="pill">9</button>
+      <button class="pill">10</button>
+    </div>
+  </div>
+
+  <a class="go" href="PhoneHome.dc.html" style="margin-top: auto;">Start private table<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></a>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

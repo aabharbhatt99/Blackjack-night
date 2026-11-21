@@ -7,7 +7,11 @@ Deploy (free Cloudflare account):
 
 Up to 10 people can join a lobby (the dealer plus 9 players).
 
-Test alone on your computer:
+Play alone: on the home page pick the total number of players (2–10) and tap "Play vs computer".
+You get a private table with computer players. They bet, play and take turns as dealer, and
+nobody else can join. If you're knocked out, the computers play on until one wins.
+
+Test multiplayer alone on your computer:
   npx wrangler dev  -> open http://localhost:8787 in a normal window, an Incognito window
   and another browser; each one is a separate player.
 

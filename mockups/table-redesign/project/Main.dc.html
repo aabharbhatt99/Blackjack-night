@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Your turn</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#e3b84f}a:hover{color:#f3d27e}
+.rail{position:absolute;left:30px;top:64px;width:980px;height:776px;border-radius:18px 18px 50% 50%/18px 18px 72% 72%;background:linear-gradient(180deg,#5a3519,#3a2110);box-shadow:0 30px 60px rgba(0,0,0,.55),inset 0 2px 0 rgba(255,255,255,.12)}
+.felt{position:absolute;inset:18px;border-radius:10px 10px 50% 50%/10px 10px 72% 72%;background:radial-gradient(ellipse at 50% 18%,#1d7a4f,#0d3f27 78%);box-shadow:inset 0 0 0 2px rgba(227,184,79,.35),inset 0 0 80px rgba(0,0,0,.45)}
+.seat{position:absolute;width:180px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.spot{width:72px;height:72px;border-radius:50%;border:2px dashed rgba(255,255,255,.3);display:flex;align-items:flex-end;justify-content:center;gap:3px;padding-bottom:16px;box-sizing:border-box;position:relative}
+.spot.allin{border-color:#e3b84f;box-shadow:0 0 18px rgba(227,184,79,.45)}
+.pile{display:flex;flex-direction:column-reverse;align-items:center}
+.ck{width:30px;height:11px;border-radius:50%;border:2px dashed rgba(255,255,255,.8);box-shadow:0 2px 0 rgba(0,0,0,.45);box-sizing:border-box}
+.ck+.ck{margin-bottom:-6px}
+.k1{background:#eceff1;border-color:#9aa4ad}.k5{background:#d23b3b}.k10{background:#2f6fe0}.k25{background:#1f9a55}.k50{background:#1b1b1b;border-color:#e3b84f}
+.amt{position:absolute;bottom:-11px;left:50%;transform:translateX(-50%);white-space:nowrap;font:700 12px 'Space Grotesk',sans-serif;background:rgba(8,14,11,.94);border:1px solid #3a5045;color:#eef3ef;border-radius:99px;padding:2px 9px}
+.amt.gold{border-color:#e3b84f;color:#f3d27e}.amt.red{border-color:#ff9d8f;color:#ff9d8f}.amt.green{border-color:#8fe0ad;color:#8fe0ad}
+.hand{display:flex;align-items:center;position:relative;min-height:84px;margin-top:6px}
+.big.hand{min-height:96px}
+.cd{width:58px;height:84px;border-radius:8px;background:#fff;color:#111;position:relative;flex:none;box-shadow:0 4px 10px rgba(0,0,0,.4);font:700 20px/1 'Space Grotesk',sans-serif}
+.cd+.cd{margin-left:-18px}
+.cd .r{position:absolute;left:6px;top:6px}.cd .s{position:absolute;left:7px;top:28px;font-size:16px}.cd .c{position:absolute;right:6px;bottom:4px;font-size:26px}
+.cd.red{color:#c0392b}
+.cd.bk{background:repeating-linear-gradient(45deg,#8a2333 0 6px,#6b1a27 6px 12px);box-shadow:inset 0 0 0 3px #fff,0 4px 10px rgba(0,0,0,.4)}
+.cd.gh{background:transparent;border:2px dashed rgba(255,255,255,.25);box-shadow:none}
+.big .cd{width:66px;height:96px;font-size:23px}.big .cd .s{top:32px;font-size:18px}.big .cd .c{font-size:30px}
+.dim{opacity:.55}
+.tot{position:absolute;right:-14px;top:-12px;background:#0b1210;border:1px solid #e3b84f;color:#f3d27e;font:700 14px 'Space Grotesk',sans-serif;border-radius:99px;padding:2px 8px;z-index:2}
+.tot.red{border-color:#ff9d8f;color:#ff9d8f}
+.plate{background:rgba(10,16,13,.94);border:1px solid #2c3d34;border-radius:14px;padding:7px 14px;text-align:center;min-width:132px;box-sizing:border-box;position:relative}
+.plate.mine{background:#1a1406;border:2px solid #e3b84f;box-shadow:0 0 22px rgba(227,184,79,.4);padding-top:12px}
+.plate.mine .pn{color:#f3d27e}
+.plate.turn{box-shadow:0 0 0 3px rgba(227,184,79,.35),0 0 30px rgba(227,184,79,.6)}
+.me-badge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:#e3b84f;color:#2a1e00;font:700 11px Inter,sans-serif;letter-spacing:.14em;padding:2px 10px;border-radius:99px;box-shadow:0 0 12px rgba(227,184,79,.7);white-space:nowrap}
+.pn{font-weight:600;font-size:16px}
+.ps{font-size:13px;color:#a9bcb1;font-weight:600}.pc{font-size:12px;color:#a9bcb1}
+.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.08em;background:#e3b84f;color:#2a1e00;padding:2px 8px;border-radius:99px}
+.tag.o{background:transparent;border:1px solid #e3b84f;color:#e3b84f}
+.win{color:#8fe0ad}.lose{color:#ff9d8f}.goldt{color:#f3d27e}
+.kick{font-size:12px;letter-spacing:.12em;color:#e3b84f;font-weight:700}
+.li{display:flex;align-items:center;gap:10px;padding:8px 10px;background:#0b1210;border:1px solid #22302a;border-radius:12px;font-size:13px}
+.li.me{background:#1a1406;border-color:#e3b84f}
+.av{width:28px;height:28px;border-radius:50%;background:#2c3d34;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex:none}
+.av.d{background:#e3b84f;color:#2a1e00}
+.li .n{flex:1;min-width:0;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.li .n small{display:block;font-weight:500;font-size:12px;color:#a9bcb1}
+.li .b{font:700 12px 'Space Grotesk',sans-serif;color:#f3d27e;min-width:30px;text-align:right}
+.li .c{font-size:13px;color:#a9bcb1;min-width:36px;text-align:right}
+.fbtn{flex:1;height:42px;border-radius:12px;border:1px solid #2c3d34;background:transparent;color:#a9bcb1;font:500 14px Inter,sans-serif}
+@keyframes toPool{0%,15%{transform:translate(0,0) scale(1);opacity:1}62%{transform:translate(-154px,-150px) scale(.9);opacity:1}80%,100%{transform:translate(-154px,-150px) scale(.9);opacity:0}}
+.fly{position:absolute;z-index:6;animation:toPool 3s cubic-bezier(.45,0,.25,1) infinite;filter:drop-shadow(0 10px 10px rgba(0,0,0,.45))}
+@media (prefers-reduced-motion:reduce){.fly{animation:none;opacity:0}}
+</style>
+</helmet>
+<div style="width: 1360px; height: 860px; display: flex; background: #0b1210; color: #eef3ef; font-family: Inter, system-ui, sans-serif; overflow: hidden;">
+
+<section aria-label="Table" style="position: relative; width: 1040px; height: 860px; flex: none;">
+  <div style="position: absolute; left: 32px; top: 20px; display: flex; align-items: baseline; gap: 12px; font-size: 14px; color: #a9bcb1;">
+    <b style="font: 700 18px 'Space Grotesk', sans-serif; color: #eef3ef;">Round 3</b><span>Arjun is dealing · dealer passes clockwise</span>
+  </div>
+  <div class="rail"><div class="felt"></div></div>
+  <div style="position: absolute; left: 0; right: 0; top: 262px; text-align: center; font: 700 22px 'Space Grotesk', sans-serif; letter-spacing: 6px; color: rgba(227,184,79,.55);">BLACKJACK PAYS 3 TO 2</div>
+
+  <div aria-hidden="true" style="position: absolute; left: 880px; top: 96px; width: 66px; height: 96px; transform: rotate(-8deg);">
+    <div class="cd bk" style="position: absolute; left: 0; top: 0; width: 66px; height: 96px;"></div>
+    <div class="cd bk" style="position: absolute; left: -2px; top: -4px; width: 66px; height: 96px;"></div>
+    <div class="cd bk" style="position: absolute; left: -4px; top: -8px; width: 66px; height: 96px;"></div>
+  </div>
+  <div style="position: absolute; left: 870px; top: 210px; font-size: 12px; letter-spacing: .08em; color: rgba(255,255,255,.7); font-weight: 600;">38 CARDS</div>
+
+  <!-- dealer -->
+  <div class="seat" style="left: 430px; top: 76px;">
+    <div class="plate"><div class="pn"><span class="tag" style="margin-right: 6px;">DEALER</span>Arjun</div><div class="ps">Plays last</div><div class="pc">640 chips</div></div>
+    <div class="big hand"><div class="cd bk"></div><div class="cd gh"></div></div>
+  </div>
+
+  <!-- dealer pool -->
+  <div style="position: absolute; left: 648px; top: 120px; width: 176px; height: 104px; border-radius: 16px; border: 2px dashed rgba(227,184,79,.5); background: rgba(0,0,0,.2); box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 8px 0 10px;">
+    <div class="kick" style="font-size: 11px;">DEALER POOL</div>
+    <div style="display: flex; gap: 4px; align-items: flex-end;">
+      <div class="pile"><div class="ck k5"></div><div class="ck k5"></div></div>
+    </div>
+    <div style="font: 700 13px 'Space Grotesk', sans-serif; color: #f3d27e;">10 <span style="font: 500 12px Inter, sans-serif; color: #a9bcb1;">from Priya</span></div>
+  </div>
+
+  <!-- bust flight: Priya's spot to the pool -->
+  <svg aria-hidden="true" width="1040" height="860" style="position: absolute; left: 0; top: 0; pointer-events: none;">
+    <path d="M 890 326 Q 890 200 748 182" fill="none" stroke="rgba(255,157,143,.6)" stroke-width="2" stroke-dasharray="6 7"></path>
+    <path d="M 760 174 L 746 182 L 758 192" fill="none" stroke="rgba(255,157,143,.85)" stroke-width="2"></path>
+  </svg>
+  <div class="fly" style="left: 875px; top: 312px;"><div class="pile"><div class="ck k5"></div><div class="ck k5"></div></div></div>
+
+  <!-- seats in the current clockwise rotation (dealer's left = right side of the screen) -->
+  <!-- Priya: k1, already played, bust -->
+  <div class="seat" style="left: 800px; top: 290px;">
+    <div class="spot"><span class="amt red">Bust −10</span></div>
+    <div class="hand dim"><div class="cd"><span class="r">10</span><span class="s">♠</span><span class="c">♠</span></div><div class="cd red"><span class="r">6</span><span class="s">♥</span><span class="c">♥</span></div><div class="cd"><span class="r">9</span><span class="s">♣</span><span class="c">♣</span></div><span class="tot red">25</span></div>
+    <div class="plate"><div class="pn"><span class="tag o" style="margin-right: 6px;">NEXT</span>Priya</div><div class="ps lose">Bust</div><div class="pc">310 chips</div></div>
+  </div>
+
+  <!-- You: k2, playing -->
+  <div class="seat" style="left: 650px; top: 500px;">
+    <div class="spot" style="border-color: rgba(227,184,79,.7);"><div class="pile"><div class="ck k10"></div><div class="ck k10"></div></div><span class="amt gold">20</span></div>
+    <div class="big hand"><div class="cd red"><span class="r">8</span><span class="s">♦</span><span class="c">♦</span></div><div class="cd"><span class="r">7</span><span class="s">♣</span><span class="c">♣</span></div><span class="tot">15</span></div>
+    <div class="plate mine turn"><span class="me-badge">YOU</span><div class="pn">Kabir</div><div class="ps goldt">Playing</div><div class="pc">500 chips</div></div>
+  </div>
+
+  <!-- Sam: k3 -->
+  <div class="seat" style="left: 430px; top: 510px;">
+    <div class="spot"><div class="pile"><div class="ck k25"></div></div><span class="amt">25</span></div>
+    <div class="hand"><div class="cd bk"></div></div>
+    <div class="plate"><div class="pn">Sam</div><div class="ps">Waiting · bet 25</div><div class="pc">375 chips</div></div>
+  </div>
+
+  <!-- Mia: k4, all in -->
+  <div class="seat" style="left: 210px; top: 510px;">
+    <div class="spot allin"><div class="pile"><div class="ck k10"></div><div class="ck k25"></div><div class="ck k50"></div></div><span class="amt gold">ALL IN 85</span></div>
+    <div class="hand"><div class="cd bk"></div></div>
+    <div class="plate"><div class="pn">Mia</div><div class="ps goldt">All in · waiting</div><div class="pc">85 chips</div></div>
+  </div>
+
+  <!-- Leo: k5 -->
+  <div class="seat" style="left: 60px; top: 290px;">
+    <div class="spot"><div class="pile"><div class="ck k10"></div></div><span class="amt">10</span></div>
+    <div class="hand"><div class="cd bk"></div></div>
+    <div class="plate"><div class="pn">Leo</div><div class="ps">Waiting · bet 10</div><div class="pc">490 chips</div></div>
+  </div>
+
+  <!-- action dock: centre of the felt -->
+  <div style="position: absolute; left: 320px; top: 304px; width: 400px; box-sizing: border-box; padding: 14px 18px 16px; border-radius: 20px; background: rgba(8,14,11,.9); border: 1px solid #e3b84f; box-shadow: 0 18px 40px rgba(0,0,0,.5), 0 0 30px rgba(227,184,79,.18); display: flex; flex-direction: column; gap: 12px; z-index: 4;">
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <div style="font: 700 46px/1 'Space Grotesk', sans-serif;">15</div>
+      <div style="flex: 1;">
+        <div class="kick">YOUR TURN</div>
+        <div style="font-size: 13px; color: #a9bcb1;">vs dealer <b style="color: rgb(238, 243, 239)">?</b> (face down) · <b>bet 20</b></div>
+      </div>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;">
+      <button style="height: 64px; border-radius: 16px; border: 0; background: #e3b84f; color: #1e1600; font: 700 22px 'Space Grotesk', sans-serif; box-shadow: 0 8px 22px rgba(227,184,79,.3); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;">HIT<span style="font: 500 12px Inter, sans-serif; opacity: .75;">Take a card · H</span></button>
+      <button style="height: 64px; border-radius: 16px; border: 1px solid #3a5045; background: #1d2a24; color: #eef3ef; font: 700 22px 'Space Grotesk', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;">STAND<span style="font: 500 12px Inter, sans-serif; opacity: .75;">Keep 15 · S</span></button>
+    </div>
+  </div>
+</section>
+
+<aside aria-label="Game details" style="width: 320px; flex: none; box-sizing: border-box; background: #121a17; border-left: 1px solid #22302a; padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div style="font: 700 18px 'Space Grotesk', sans-serif;">Blackjack Night</div>
+    <button aria-label="Copy lobby code" style="display: flex; align-items: center; gap: 8px; background: #0b1210; border: 1px solid #2c3d34; color: #e3b84f; font: 700 14px 'Space Grotesk', sans-serif; letter-spacing: .2em; padding: 7px 10px; border-radius: 10px;">KQRT<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a9bcb1" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button>
+  </div>
+  <div style="background: #0b1210; border: 1px solid #22302a; border-radius: 14px; padding: 12px 14px;">
+    <div class="kick">ROUND 3 · PLAYING</div>
+    <div style="font: 600 16px 'Space Grotesk', sans-serif; margin-top: 2px;">Your turn</div>
+    <div style="font-size: 13px; color: #a9bcb1;">Hit or Stand on the table · next dealer: Priya</div>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px;">
+    <div style="background: #0b1210; border: 1px solid #22302a; border-radius: 12px; padding: 8px 12px;"><div style="font-size: 12px; color: #a9bcb1;">Balance</div><div style="font: 700 20px 'Space Grotesk', sans-serif;">500</div></div>
+    <div style="background: #0b1210; border: 1px solid #e3b84f; border-radius: 12px; padding: 8px 12px;"><div style="font-size: 12px; color: #a9bcb1;">Bet this round</div><div style="font: 700 20px 'Space Grotesk', sans-serif; color: #f3d27e;">20</div></div>
+  </div>
+  <div style="font-size: 12px; letter-spacing: .12em; color: #a9bcb1; font-weight: 700;">AT THE TABLE · CLOCKWISE</div>
+  <div style="display: flex; flex-direction: column; gap: 6px; flex: 1; min-height: 0;">
+    <div class="li"><div class="av d">A</div><div class="n">Arjun<small>Dealer · plays last</small></div><span class="b"></span><span class="c">640</span></div>
+    <div class="li"><div class="av">P</div><div class="n">Priya<small class="lose">Bust</small></div><span class="b">10</span><span class="c">310</span></div>
+    <div class="li me"><div class="av">K</div><div class="n">Kabir (you)<small class="goldt">Playing</small></div><span class="b">20</span><span class="c">500</span></div>
+    <div class="li"><div class="av">S</div><div class="n">Sam<small>Waiting</small></div><span class="b">25</span><span class="c">375</span></div>
+    <div class="li"><div class="av">M</div><div class="n">Mia<small class="goldt">All in</small></div><span class="b">85</span><span class="c">85</span></div>
+    <div class="li"><div class="av">L</div><div class="n">Leo<small>Waiting</small></div><span class="b">10</span><span class="c">490</span></div>
+  </div>
+  <div style="display: flex; gap: 10px;"><button class="fbtn">Leave lobby</button><button class="fbtn">Reset game</button></div>
+</aside>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1360,"height":860}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

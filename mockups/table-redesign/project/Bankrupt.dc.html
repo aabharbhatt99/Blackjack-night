@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Dealer bankrupt payout</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#e3b84f}a:hover{color:#f3d27e}
+.rail{position:absolute;left:30px;top:64px;width:980px;height:776px;border-radius:18px 18px 50% 50%/18px 18px 72% 72%;background:linear-gradient(180deg,#5a3519,#3a2110);box-shadow:0 30px 60px rgba(0,0,0,.55),inset 0 2px 0 rgba(255,255,255,.12)}
+.felt{position:absolute;inset:18px;border-radius:10px 10px 50% 50%/10px 10px 72% 72%;background:radial-gradient(ellipse at 50% 18%,#1d7a4f,#0d3f27 78%);box-shadow:inset 0 0 0 2px rgba(227,184,79,.35),inset 0 0 80px rgba(0,0,0,.45)}
+.seat{position:absolute;width:180px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.spot{width:72px;height:72px;border-radius:50%;border:2px dashed rgba(255,255,255,.3);display:flex;align-items:flex-end;justify-content:center;gap:3px;padding-bottom:16px;box-sizing:border-box;position:relative}
+.spot.won{border-color:#8fe0ad;box-shadow:0 0 18px rgba(143,224,173,.35)}
+.spot.part{border-color:#e3b84f;box-shadow:0 0 18px rgba(227,184,79,.35)}
+.pile{display:flex;flex-direction:column-reverse;align-items:center}
+.ck{width:30px;height:11px;border-radius:50%;border:2px dashed rgba(255,255,255,.8);box-shadow:0 2px 0 rgba(0,0,0,.45);box-sizing:border-box}
+.ck+.ck{margin-bottom:-6px}
+.k1{background:#eceff1;border-color:#9aa4ad}.k5{background:#d23b3b}.k10{background:#2f6fe0}.k25{background:#1f9a55}.k50{background:#1b1b1b;border-color:#e3b84f}
+.amt{position:absolute;bottom:-11px;left:50%;transform:translateX(-50%);white-space:nowrap;font:700 12px 'Space Grotesk',sans-serif;background:rgba(8,14,11,.94);border:1px solid #3a5045;color:#eef3ef;border-radius:99px;padding:2px 9px}
+.amt.red{border-color:#ff9d8f;color:#ff9d8f}.amt.green{border-color:#8fe0ad;color:#8fe0ad}.amt.gold{border-color:#e3b84f;color:#f3d27e}
+.hand{display:flex;align-items:center;position:relative;min-height:84px;margin-top:6px}
+.big.hand{min-height:96px}
+.cd{width:58px;height:84px;border-radius:8px;background:#fff;color:#111;position:relative;flex:none;box-shadow:0 4px 10px rgba(0,0,0,.4);font:700 20px/1 'Space Grotesk',sans-serif}
+.cd+.cd{margin-left:-18px}
+.cd .r{position:absolute;left:6px;top:6px}.cd .s{position:absolute;left:7px;top:28px;font-size:16px}.cd .c{position:absolute;right:6px;bottom:4px;font-size:26px}
+.cd.red{color:#c0392b}
+.cd.bk{background:repeating-linear-gradient(45deg,#8a2333 0 6px,#6b1a27 6px 12px);box-shadow:inset 0 0 0 3px #fff,0 4px 10px rgba(0,0,0,.4)}
+.big .cd{width:66px;height:96px;font-size:23px}.big .cd .s{top:32px;font-size:18px}.big .cd .c{font-size:30px}
+.dim{opacity:.55}
+.tot{position:absolute;right:-14px;top:-12px;background:#0b1210;border:1px solid #e3b84f;color:#f3d27e;font:700 14px 'Space Grotesk',sans-serif;border-radius:99px;padding:2px 8px;z-index:2}
+.tot.red{border-color:#ff9d8f;color:#ff9d8f}
+.plate{background:rgba(10,16,13,.94);border:1px solid #2c3d34;border-radius:14px;padding:7px 14px;text-align:center;min-width:132px;box-sizing:border-box;position:relative}
+.plate.mine{background:#1a1406;border:2px solid #e3b84f;box-shadow:0 0 22px rgba(227,184,79,.4);padding-top:12px}
+.plate.mine .pn{color:#f3d27e}
+.plate.broke{border-color:#ff9d8f;box-shadow:0 0 22px rgba(255,157,143,.3)}
+.me-badge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:#e3b84f;color:#2a1e00;font:700 11px Inter,sans-serif;letter-spacing:.14em;padding:2px 10px;border-radius:99px;box-shadow:0 0 12px rgba(227,184,79,.7);white-space:nowrap}
+.pn{font-weight:600;font-size:16px}
+.ps{font-size:13px;color:#a9bcb1;font-weight:600}.pc{font-size:12px;color:#a9bcb1}
+.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.08em;background:#e3b84f;color:#2a1e00;padding:2px 8px;border-radius:99px}
+.tag.o{background:transparent;border:1px solid #e3b84f;color:#e3b84f}
+.tag.red{background:#ff9d8f;color:#2a0a05}
+.win{color:#8fe0ad}.lose{color:#ff9d8f}.goldt{color:#f3d27e}
+.kick{font-size:12px;letter-spacing:.12em;color:#e3b84f;font-weight:700}
+.li{display:flex;align-items:center;gap:10px;padding:6px 10px;background:#0b1210;border:1px solid #22302a;border-radius:12px;font-size:13px}
+.li.me{background:#1a1406;border-color:#e3b84f}
+.av{width:26px;height:26px;border-radius:50%;background:#2c3d34;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex:none}
+.av.d{background:#e3b84f;color:#2a1e00}
+.li .n{flex:1;min-width:0;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.li .n small{display:block;font-weight:500;font-size:12px;color:#a9bcb1}
+.li .b{font:700 12px 'Space Grotesk',sans-serif;min-width:34px;text-align:right}
+.li .c{font-size:13px;color:#a9bcb1;min-width:36px;text-align:right}
+.bk-row{display:grid;grid-template-columns:1fr 44px 44px 64px;gap:6px;align-items:center;font-size:13px;padding:5px 0;border-top:1px solid #22302a}
+.bk-row.h{border-top:0;font-size:11px;letter-spacing:.08em;color:#a9bcb1;font-weight:700;padding-top:0}
+.bk-row span:not(:first-child){text-align:right}
+.bk-row b{font:700 13px 'Space Grotesk',sans-serif}
+.fbtn{flex:1;height:40px;border-radius:12px;border:1px solid #2c3d34;background:transparent;color:#a9bcb1;font:500 14px Inter,sans-serif}
+@keyframes payYou{0%{transform:translate(0,0);opacity:0}8%{opacity:1;transform:translate(0,0)}55%{transform:translate(4px,364px);opacity:1}75%,100%{transform:translate(4px,364px);opacity:0}}
+@keyframes paySam{0%{transform:translate(0,0);opacity:0}8%{opacity:1;transform:translate(0,0)}55%{transform:translate(-216px,374px);opacity:1}75%,100%{transform:translate(-216px,374px);opacity:0}}
+@keyframes payMia{0%{transform:translate(0,0);opacity:0}8%{opacity:1;transform:translate(0,0)}55%{transform:translate(-436px,374px);opacity:1}75%,100%{transform:translate(-436px,374px);opacity:0}}
+@keyframes payLeo{0%{transform:translate(0,0);opacity:0}8%{opacity:1;transform:translate(0,0)}55%{transform:translate(-586px,154px);opacity:1}75%,100%{transform:translate(-586px,154px);opacity:0}}
+.fly{position:absolute;left:721px;top:160px;z-index:6;opacity:0;filter:drop-shadow(0 10px 10px rgba(0,0,0,.45));animation-duration:3.6s;animation-iteration-count:infinite;animation-timing-function:cubic-bezier(.45,0,.25,1)}
+.f1{animation-name:paySam;animation-delay:0s}.f2{animation-name:payLeo;animation-delay:.18s}.f3{animation-name:payYou;animation-delay:.36s}.f4{animation-name:payMia;animation-delay:.54s}
+@media (prefers-reduced-motion:reduce){.fly{animation:none}}
+</style>
+</helmet>
+<div style="width: 1360px; height: 860px; display: flex; background: #0b1210; color: #eef3ef; font-family: Inter, system-ui, sans-serif; overflow: hidden;">
+
+<section aria-label="Table" style="position: relative; width: 1040px; height: 860px; flex: none;">
+  <div style="position: absolute; left: 32px; top: 20px; display: flex; align-items: baseline; gap: 12px; font-size: 14px; color: #a9bcb1;">
+    <b style="font: 700 18px 'Space Grotesk', sans-serif; color: #eef3ef;">Round 3</b><span>Round over · dealer bankrupt</span>
+  </div>
+  <div class="rail"><div class="felt"></div></div>
+  <div style="position: absolute; left: 0; right: 0; top: 262px; text-align: center; font: 700 22px 'Space Grotesk', sans-serif; letter-spacing: 6px; color: rgba(227,184,79,.55);">BLACKJACK PAYS 3 TO 2</div>
+
+  <div aria-hidden="true" style="position: absolute; left: 880px; top: 96px; width: 66px; height: 96px; transform: rotate(-8deg);">
+    <div class="cd bk" style="position: absolute; left: 0; top: 0; width: 66px; height: 96px;"></div>
+    <div class="cd bk" style="position: absolute; left: -2px; top: -4px; width: 66px; height: 96px;"></div>
+  </div>
+  <div style="position: absolute; left: 870px; top: 210px; font-size: 12px; letter-spacing: .08em; color: rgba(255,255,255,.7); font-weight: 600;">31 CARDS</div>
+
+  <!-- dealer: bankrupt -->
+  <div class="seat" style="left: 430px; top: 76px;">
+    <div class="plate broke"><div class="pn"><span class="tag red" style="margin-right: 6px;">BANKRUPT</span>Arjun</div><div class="ps lose">Knocked out</div><div class="pc">0 chips</div></div>
+    <div class="big hand"><div class="cd"><span class="r">K</span><span class="s">♠</span><span class="c">♠</span></div><div class="cd red"><span class="r">6</span><span class="s">♦</span><span class="c">♦</span></div><div class="cd"><span class="r">8</span><span class="s">♣</span><span class="c">♣</span></div><span class="tot red">24</span></div>
+  </div>
+
+  <!-- the bank being shared out -->
+  <div style="position: absolute; left: 648px; top: 120px; width: 176px; height: 104px; border-radius: 16px; border: 2px dashed rgba(255,157,143,.6); background: rgba(0,0,0,.25); box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 8px 0 10px;">
+    <div style="font-size: 11px; letter-spacing: .12em; color: #ff9d8f; font-weight: 700;">BANK SHARED OUT</div>
+    <div style="display: flex; gap: 4px; align-items: flex-end;">
+      <div class="pile"><div class="ck k25"></div><div class="ck k25"></div></div>
+      <div class="pile"><div class="ck k10"></div></div>
+    </div>
+    <div style="font: 700 13px 'Space Grotesk', sans-serif; color: #f3d27e;">60 <span style="font: 500 12px Inter, sans-serif; color: #a9bcb1;">= 50 chips + 10 lost</span></div>
+  </div>
+
+  <div class="fly f1"><div class="pile"><div class="ck k25"></div></div></div>
+  <div class="fly f2"><div class="pile"><div class="ck k10"></div></div></div>
+  <div class="fly f3"><div class="pile"><div class="ck k10"></div><div class="ck k5"></div><div class="ck k1"></div></div></div>
+  <div class="fly f4"><div class="pile"><div class="ck k5"></div><div class="ck k1"></div></div></div>
+
+  <!-- Priya: bust, her 10 is part of the bank -->
+  <div class="seat" style="left: 800px; top: 290px;">
+    <div class="spot"><span class="amt red">Bust −10</span></div>
+    <div class="hand dim"><div class="cd"><span class="r">10</span><span class="s">♠</span><span class="c">♠</span></div><div class="cd red"><span class="r">6</span><span class="s">♥</span><span class="c">♥</span></div><div class="cd"><span class="r">9</span><span class="s">♣</span><span class="c">♣</span></div><span class="tot red">25</span></div>
+    <div class="plate"><div class="pn"><span class="tag o" style="margin-right: 6px;">NEXT DEALER</span>Priya</div><div class="ps lose">Bust −10</div><div class="pc">310 chips</div></div>
+  </div>
+
+  <!-- You: 19, partly paid -->
+  <div class="seat" style="left: 650px; top: 500px;">
+    <div class="spot part"><div class="pile"><div class="ck k10"></div><div class="ck k10"></div></div><div class="pile"><div class="ck k10"></div><div class="ck k5"></div><div class="ck k1"></div></div><span class="amt gold">Win +18 of 20</span></div>
+    <div class="big hand"><div class="cd red"><span class="r">9</span><span class="s">♦</span><span class="c">♦</span></div><div class="cd"><span class="r">K</span><span class="s">♣</span><span class="c">♣</span></div><span class="tot">19</span></div>
+    <div class="plate mine"><span class="me-badge">YOU</span><div class="pn">Kabir</div><div class="ps goldt">Win +18 of 20</div><div class="pc">500 chips</div></div>
+  </div>
+
+  <!-- Sam: 20, paid in full -->
+  <div class="seat" style="left: 430px; top: 510px;">
+    <div class="spot won"><div class="pile"><div class="ck k25"></div></div><div class="pile"><div class="ck k25"></div></div><span class="amt green">Win +25</span></div>
+    <div class="hand"><div class="cd red"><span class="r">J</span><span class="s">♥</span><span class="c">♥</span></div><div class="cd"><span class="r">Q</span><span class="s">♠</span><span class="c">♠</span></div><span class="tot">20</span></div>
+    <div class="plate"><div class="pn">Sam</div><div class="ps win">Win +25</div><div class="pc">375 chips</div></div>
+  </div>
+
+  <!-- Mia: 18, guaranteed share only -->
+  <div class="seat" style="left: 210px; top: 510px;">
+    <div class="spot part"><div class="pile"><div class="ck k25"></div><div class="ck k5"></div></div><div class="pile"><div class="ck k5"></div><div class="ck k1"></div></div><span class="amt gold">Win +7 of 30</span></div>
+    <div class="hand"><div class="cd red"><span class="r">8</span><span class="s">♥</span><span class="c">♥</span></div><div class="cd"><span class="r">Q</span><span class="s">♣</span><span class="c">♣</span></div><span class="tot">18</span></div>
+    <div class="plate"><div class="pn">Mia</div><div class="ps goldt">Win +7 of 30</div><div class="pc">85 chips</div></div>
+  </div>
+
+  <!-- Leo: 20, paid in full -->
+  <div class="seat" style="left: 60px; top: 290px;">
+    <div class="spot won"><div class="pile"><div class="ck k10"></div></div><div class="pile"><div class="ck k10"></div></div><span class="amt green">Win +10</span></div>
+    <div class="hand"><div class="cd red"><span class="r">K</span><span class="s">♦</span><span class="c">♦</span></div><div class="cd"><span class="r">10</span><span class="s">♣</span><span class="c">♣</span></div><span class="tot">20</span></div>
+    <div class="plate"><div class="pn">Leo</div><div class="ps win">Win +10</div><div class="pc">490 chips</div></div>
+  </div>
+
+  <!-- results dock -->
+  <div style="position: absolute; left: 320px; top: 292px; width: 400px; box-sizing: border-box; padding: 14px 18px 16px; border-radius: 20px; background: rgba(8,14,11,.92); border: 1px solid #e3b84f; box-shadow: 0 18px 40px rgba(0,0,0,.5); display: flex; flex-direction: column; gap: 10px; z-index: 4;">
+    <div class="kick">ROUND OVER · DEALER BUSTS WITH 24</div>
+    <div style="display: flex; align-items: center; gap: 10px; background: rgba(255,157,143,.1); border: 1px solid rgba(255,157,143,.5); border-radius: 12px; padding: 8px 12px; font-size: 13px; color: #ffc2b8;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff9d8f" stroke-width="2" aria-hidden="true"><path d="M12 9v4"></path><path d="M12 17h.01"></path><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path></svg>
+      <span><b style="color: #ff9d8f;">Dealer is bankrupt.</b> Payouts were shared.</span>
+    </div>
+    <div style="display: flex; align-items: baseline; gap: 10px;">
+      <div style="font: 700 30px/1 'Space Grotesk', sans-serif; color: #f3d27e;">You win +18 <span style="font-size: 18px; color: #a9bcb1;">of 20</span></div>
+      <div style="font-size: 13px; color: #a9bcb1;">Balance 500 → 518</div>
+    </div>
+    <button style="height: 50px; border-radius: 14px; border: 0; background: #e3b84f; color: #1e1600; font: 700 15px Inter, sans-serif; box-shadow: 0 6px 18px rgba(227,184,79,.25);">Deal next round</button>
+    <div style="font-size: 12px; color: #a9bcb1; text-align: center;">Priya moves into the dealer chair next · Arjun is knocked out</div>
+  </div>
+</section>
+
+<aside aria-label="Game details" style="width: 320px; flex: none; box-sizing: border-box; background: #121a17; border-left: 1px solid #22302a; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px;">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div style="font: 700 18px 'Space Grotesk', sans-serif;">Blackjack Night</div>
+    <button aria-label="Copy lobby code" style="display: flex; align-items: center; gap: 8px; background: #0b1210; border: 1px solid #2c3d34; color: #e3b84f; font: 700 14px 'Space Grotesk', sans-serif; letter-spacing: .2em; padding: 7px 10px; border-radius: 10px;">KQRT<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a9bcb1" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></button>
+  </div>
+  <div style="background: #0b1210; border: 1px solid rgba(255,157,143,.5); border-radius: 14px; padding: 12px 14px;">
+    <div style="font-size: 12px; letter-spacing: .12em; color: #ff9d8f; font-weight: 700;">ROUND 3 · DEALER BANKRUPT</div>
+    <div style="font: 600 16px 'Space Grotesk', sans-serif; margin-top: 2px;">Winners were owed 85, bank had 60</div>
+    <div style="font-size: 13px; color: #a9bcb1;">Arjun is knocked out · next dealer: Priya</div>
+  </div>
+
+  <!-- how the bank was shared -->
+  <div style="background: #0b1210; border: 1px solid #22302a; border-radius: 14px; padding: 12px 14px;">
+    <div class="kick" style="margin-bottom: 4px;">HOW THE 60 WAS SHARED</div>
+    <div style="font-size: 12px; color: #a9bcb1; margin-bottom: 8px;">1 · Half (30) split equally: <b style="color: #eef3ef;">7 each</b><br>2 · The rest by best hand; ties split equally</div>
+    <div class="bk-row h"><span>PLAYER</span><span>HAND</span><span>OWED</span><span>PAID</span></div>
+    <div class="bk-row"><span>Sam</span><span>20</span><span>25</span><span><b class="win">25</b></span></div>
+    <div class="bk-row"><span>Leo</span><span>20</span><span>10</span><span><b class="win">10</b></span></div>
+    <div class="bk-row" style="color: #f3d27e;"><span>Kabir (you)</span><span>19</span><span>20</span><span><b>18</b></span></div>
+    <div class="bk-row"><span>Mia</span><span>18</span><span>30</span><span><b class="goldt">7</b></span></div>
+  </div>
+
+  <div style="font-size: 12px; letter-spacing: .12em; color: #a9bcb1; font-weight: 700;">AT THE TABLE · CLOCKWISE</div>
+  <div style="display: flex; flex-direction: column; gap: 5px; flex: 1; min-height: 0;">
+    <div class="li" style="opacity: .6;"><div class="av">A</div><div class="n">Arjun<small class="lose">Bankrupt · knocked out</small></div><span class="b lose">−50</span><span class="c">0</span></div>
+    <div class="li"><div class="av">P</div><div class="n">Priya<small class="lose">Bust · 25</small></div><span class="b lose">−10</span><span class="c">310</span></div>
+    <div class="li me"><div class="av">K</div><div class="n">Kabir (you)<small class="goldt">Win 18 of 20</small></div><span class="b goldt">+18</span><span class="c">500</span></div>
+    <div class="li"><div class="av">S</div><div class="n">Sam<small class="win">Win · 20</small></div><span class="b win">+25</span><span class="c">375</span></div>
+    <div class="li"><div class="av">M</div><div class="n">Mia<small class="goldt">Win 7 of 30</small></div><span class="b goldt">+7</span><span class="c">85</span></div>
+    <div class="li"><div class="av">L</div><div class="n">Leo<small class="win">Win · 20</small></div><span class="b win">+10</span><span class="c">490</span></div>
+  </div>
+  <div style="display: flex; gap: 10px;"><button class="fbtn">Leave lobby</button><button class="fbtn">Reset game</button></div>
+</aside>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1360,"height":860}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "Betting.dc.html": {
+      "h": 860,
+      "title": "1 · Betting — controls stay in the right panel, chips on the felt, All in",
+      "w": 1360,
+      "x": 0,
+      "y": 0
+    },
+    "Main.dc.html": {
+      "h": 860,
+      "title": "2 · Your turn — Hit/Stand on the table, current seating, bust chips slide to dealer pool",
+      "w": 1360,
+      "x": 1440,
+      "y": 0
+    },
+    "Payout.dc.html": {
+      "h": 860,
+      "title": "3 · Round over — dealer pays winners",
+      "w": 1360,
+      "x": 2880,
+      "y": 0
+    },
+    "Bankrupt.dc.html": {
+      "h": 860,
+      "title": "4 · Dealer bankrupt — bank of 60 shared: half equally, half by best hand",
+      "w": 1360,
+      "x": 0,
+      "y": 1240
+    },
+    "KnockedOut.dc.html": {
+      "h": 860,
+      "title": "5 · Next round — bankrupt dealer knocked out, skipped for dealing and betting",
+      "w": 1360,
+      "x": 1440,
+      "y": 1240
+    },
+    "GameOver.dc.html": {
+      "h": 860,
+      "title": "6 · Game over — fewer than 2 players with chips",
+      "w": 1360,
+      "x": 2880,
+      "y": 1240
+    },
+    "Crowd9.dc.html": {
+      "x": 0,
+      "y": 2480,
+      "w": 1360,
+      "h": 860,
+      "title": "7 · 9 players (dealer + 8) — current layout, as the game would draw it"
+    },
+    "Crowd10.dc.html": {
+      "x": 1440,
+      "y": 2480,
+      "w": 1360,
+      "h": 860,
+      "title": "8 · 10 players (dealer + 9) — current layout, as the game would draw it"
+    },
+    "Crowd10Compact.dc.html": {
+      "x": 2880,
+      "y": 2480,
+      "w": 1360,
+      "h": 860,
+      "title": "9 · 10 players — compact seats only (still overlaps at the ends: measured 31px)"
+    },
+    "OptArc.dc.html": {
+      "x": 0,
+      "y": 3720,
+      "w": 1360,
+      "h": 860,
+      "title": "10 · Option 1 — seats continue up the sides (chosen, implemented)"
+    },
+    "OptSide.dc.html": {
+      "x": 1440,
+      "y": 3720,
+      "w": 1360,
+      "h": 860,
+      "title": "11 · Option 2 — end seats turned sideways (measured: fits, but only 2–4px between some seats)"
+    },
+    "RealGames.dc.html": {
+      "x": 0,
+      "y": 4960,
+      "w": 2040,
+      "h": 2832,
+      "title": "12 · Screenshots from real games — your turn, 3 to 10 players"
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-11-21T10:00:00Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "view": "canvas"
+  },
+  "noteOrder": [
+    "t1",
+    "t2",
+    "t3",
+    "t4",
+    "t5"
+  ],
+  "notes": {
+    "t1": {
+      "kind": "title1",
+      "maxW": 4240,
+      "text": "Table-first redesign · approved",
+      "w": 240,
+      "x": 0,
+      "y": -260
+    },
+    "t2": {
+      "kind": "title1",
+      "maxW": 4240,
+      "text": "Bankrupt dealer · approved",
+      "x": 0,
+      "y": 980
+    },
+    "t3": {
+      "kind": "title1",
+      "maxW": 4240,
+      "text": "Crowded table · 9–10 players",
+      "x": 0,
+      "y": 2220
+    },
+    "t4": {
+      "kind": "title1",
+      "maxW": 2800,
+      "text": "Fitting 10 players · Option 1 chosen",
+      "x": 0,
+      "y": 3460
+    },
+    "t5": {
+      "kind": "title1",
+      "maxW": 2040,
+      "text": "Real game · 3 to 10 players",
+      "x": 0,
+      "y": 4700
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "Betting.dc.html",
+    "Payout.dc.html",
+    "Bankrupt.dc.html",
+    "KnockedOut.dc.html",
+    "GameOver.dc.html",
+    "Crowd9.dc.html",
+    "Crowd10.dc.html",
+    "Crowd10Compact.dc.html",
+    "OptArc.dc.html",
+    "OptSide.dc.html",
+    "RealGames.dc.html"
+  ],
+  "pages": [],
+  "title": "Blackjack Table Redesign"
+}

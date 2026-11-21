@@ -5,6 +5,8 @@
 // Balances only change in settle(): bets stay on the table (client-side) until the round ends.
 const CH = [1, 5, 10, 25, 50];
 const val = h => { let t = 0, a = 0; for (const c of h) { const r = c.slice(0, -1); if (r === "A") { a++; t += 11 } else if ("JQK".includes(r)) t += 10; else t += +r } while (t > 21 && a) { t -= 10; a-- } return t };
+const BOT_NAMES = ["Ava", "Milo", "Zara", "Leo", "Nina", "Oscar", "Ruby", "Theo", "Iris"];
+const wait = (lo, hi) => lo + Math.random() * (hi - lo);
 const mkDeck = () => { const d = []; for (const s of "♠♥♦♣") for (const r of ["A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"]) d.push(r + s); for (let i = d.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0;[d[i], d[j]] = [d[j], d[i]] } return d };
 
 export default {
@@ -20,7 +22,7 @@ export default {
 
 export class Table {
   constructor() {
-    this.socks = new Map(); this.deck = [];
+    this.socks = new Map(); this.deck = []; this.botT = null;
     this.s = { phase: "lobby", host: null, start: 500, round: 0, dealer: null, turn: null, idx: -1, seq: [], players: [], msg: "", showFirst: false };
   }
   async fetch() {
@@ -43,11 +45,17 @@ export class Table {
     if (!S.host) {
       if (!m.create) return fail("No lobby with that code.");
       S.start = Math.min(100000, Math.max(10, parseInt(m.start) || 500)); S.host = id;
+      S.solo = !!m.solo; // vs computer: a private table, the computer players live in this object
     } else if (m.create && !p) return fail("That code is taken, try again.");
+    else if (S.solo && !p) return fail("That is a private table against the computer.");
     if (!p) {
       if (S.players.length >= 10) return fail("Lobby is full (10 players)."); // the table layout is measured to fit 10
       p = { id, name, chips: S.start, online: true, bet: 0, ready: false, in: false, hand: [], revealed: false, status: "", res: null };
       S.players.push(p);
+      if (S.solo && S.players.length === 1) {
+        const n = Math.min(9, Math.max(1, (parseInt(m.total) || 4) - 1));
+        for (let i = 0; i < n; i++) S.players.push({ id: "bot-" + (i + 1), name: BOT_NAMES[i], bot: true, chips: S.start, online: true, bet: 0, ready: false, in: false, hand: [], revealed: false, status: "", res: null });
+      }
     }
     p.name = name; p.online = true;
     for (const [w, i] of this.socks) if (i === id) { this.socks.delete(w); try { w.close() } catch { } }
@@ -68,6 +76,7 @@ export class Table {
       case "reset": if (pid === S.host) {
         S.players = S.players.filter(x => x.online);
         S.players.forEach(x => Object.assign(x, { chips: S.start, bet: 0, ready: false, in: false, hand: [], revealed: false, status: "", res: null, outRound: null }));
+        clearTimeout(this.botT); this.botT = null;
         Object.assign(S, { phase: "lobby", dealer: null, turn: null, seq: [], round: 0, msg: "", showFirst: false, winner: null, share: null });
       } break;
       case "dshow": if (S.phase === "betting" && pid === S.dealer) S.showFirst = !!m.show; break;
@@ -87,6 +96,7 @@ export class Table {
     this.socks.delete(ws);
     const p = this.P(pid); if (!p) return;
     p.online = false;
+    if (S.solo) return this.broadcast(); // the computer players wait for you to come back
     if (S.phase === "lobby") S.players = S.players.filter(x => x !== p);
     if (S.host === pid) { const h = this.online()[0]; if (h) S.host = h.id }
     if (S.phase === "betting") this.maybeDeal();
@@ -103,6 +113,7 @@ export class Table {
   newRound() {
     const S = this.s; S.round++; S.phase = "betting"; S.msg = ""; S.showFirst = false; S.share = null;
     S.dealer = S.dealer == null ? this.online()[0].id : this.nextDealer();
+    if (this.P(S.dealer).bot) S.showFirst = Math.random() < .5;
     S.players.forEach(p => Object.assign(p, { bet: 0, ready: p.id === S.dealer, in: false, hand: [], revealed: false, status: "", res: null }));
     S.seq = []; S.turn = null; this.maybeDeal();
   }
@@ -205,15 +216,52 @@ export class Table {
   view(me) {
     const S = this.s;
     return {
-      t: "state", me, phase: S.phase, host: S.host, start: S.start, round: S.round, dealer: S.dealer, showFirst: S.showFirst,
+      t: "state", me, solo: !!S.solo, phase: S.phase, host: S.host, start: S.start, round: S.round, dealer: S.dealer, showFirst: S.showFirst,
       next: S.phase === "lobby" ? null : this.nextDealer(), turn: S.turn, msg: S.msg, deck: this.deck.length || 52,
       winner: S.winner || null, share: S.share || null,
       players: S.players.map(p => {
         let hand = p.hand;
         if (!p.revealed) hand = p.id === S.dealer && S.showFirst ? p.hand.slice() : p.hand.map(() => null); // nobody peeks, not even the owner
-        return { id: p.id, name: p.name, chips: p.chips, online: p.online, bet: p.bet, ready: p.ready, in: p.in, revealed: p.revealed, status: p.status, res: p.res, outRound: p.outRound ?? null, hand };
+        return { id: p.id, name: p.name, bot: !!p.bot, chips: p.chips, online: p.online, bet: p.bet, ready: p.ready, in: p.in, revealed: p.revealed, status: p.status, res: p.res, outRound: p.outRound ?? null, hand };
       })
     };
   }
-  broadcast() { for (const [ws, pid] of this.socks) { try { ws.send(JSON.stringify(this.view(pid))) } catch { } } }
+  broadcast() { for (const [ws, pid] of this.socks) { try { ws.send(JSON.stringify(this.view(pid))) } catch { } } this.botTick() }
+
+  // ---------- computer players (solo tables) ----------
+  // One action at a time on a timer, so people can follow along. Paused while the human is away.
+  botTick() {
+    const S = this.s;
+    if (!S.solo || this.botT || !this.online().some(p => !p.bot)) return;
+    let ms = 0, act = null;
+    if (S.phase === "betting") {
+      const b = S.players.find(p => p.bot && p.id !== S.dealer && p.chips >= 1 && !p.ready);
+      if (b) { ms = wait(450, 950); act = () => { this.botBet(b); this.maybeDeal() } }
+    } else if (S.phase === "playing") {
+      const p = this.P(S.turn);
+      if (p && p.bot) { const t = S.turn, c = p.hand.length; ms = p.hand.length === 2 ? wait(1100, 1500) : wait(750, 1100); act = () => { if (S.turn === t && p.hand.length === c) this.botPlay(p) } }
+    } else if (S.phase === "results" && !S.winner) {
+      const me = S.players.find(p => !p.bot);
+      if (me && me.chips < 1) { const r = S.round; ms = 6000; act = () => { if (S.phase === "results" && S.round === r) this.newRound() } } // you're out: the computers play on
+    }
+    if (!act) return;
+    this.botT = setTimeout(() => { this.botT = null; try { act() } catch (e) { console.log(String(e)) } this.broadcast() }, ms);
+  }
+  botBet(p) {
+    let b = p.chips <= 25 || Math.random() < .03 ? p.chips : Math.round(p.chips * wait(.04, .16));
+    if (b >= 10) b = Math.round(b / 5) * 5;
+    p.bet = Math.min(p.chips, Math.max(1, b)); p.ready = true;
+  }
+  botPlay(p) {
+    const S = this.s, v = val(p.hand);
+    if (p.id === S.dealer) return v < 17 ? this.hit(p) : this.stand(p);
+    // simple basic strategy against the dealer's up card, when it's showing
+    const d = this.P(S.dealer), up = !d.revealed && S.showFirst && d.hand[0] ? val([d.hand[0]]) : null;
+    let hit;
+    if (v <= 11) hit = true;
+    else if (v >= 17) hit = false;
+    else if (up == null) hit = v <= 13 || (v <= 15 && Math.random() < .4);
+    else hit = up >= 7 || (v === 12 && up <= 3);
+    hit ? this.hit(p) : this.stand(p);
+  }
 }

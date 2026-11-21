@@ -1,0 +1,22 @@
+{
+  "v": 3,
+  "createdOnFiles": { "v": 1, "at": "2026-11-21T12:00:00Z" },
+  "title": "Blackjack Home Page Redesign",
+  "launch": { "view": "canvas" },
+  "pages": [],
+  "boards": {
+    "Main.dc.html": { "x": 0, "y": 0, "w": 1280, "h": 800, "title": "1 · Home: name once, then pick a path", "expand": "fill", "is_interactive": true },
+    "CreateFriends.dc.html": { "x": 1360, "y": 0, "w": 1280, "h": 800, "title": "2a · Create a lobby: with friends", "expand": "fill", "is_interactive": true },
+    "CreateComputer.dc.html": { "x": 2720, "y": 0, "w": 1280, "h": 800, "title": "2b · Create a lobby: vs computer", "expand": "fill", "is_interactive": true },
+    "Join.dc.html": { "x": 4080, "y": 0, "w": 1280, "h": 800, "title": "3 · Join a lobby", "expand": "fill", "is_interactive": true },
+    "PhoneHome.dc.html": { "x": 0, "y": 1160, "w": 390, "h": 844, "title": "Phone · Home", "is_interactive": true },
+    "PhoneCreate.dc.html": { "x": 470, "y": 1160, "w": 390, "h": 844, "title": "Phone · Create (vs computer)", "is_interactive": true },
+    "PhoneJoin.dc.html": { "x": 940, "y": 1160, "w": 390, "h": 844, "title": "Phone · Join", "is_interactive": true }
+  },
+  "order": ["Main.dc.html", "CreateFriends.dc.html", "CreateComputer.dc.html", "Join.dc.html", "PhoneHome.dc.html", "PhoneCreate.dc.html", "PhoneJoin.dc.html"],
+  "notes": {
+    "t1": { "kind": "title1", "x": 0, "y": -260, "text": "Desktop · one screen, no scroll", "maxW": 5360 },
+    "t2": { "kind": "title1", "x": 0, "y": 900, "text": "Phone · 390 × 844, no scroll", "maxW": 1330 }
+  },
+  "designSystems": []
+}
