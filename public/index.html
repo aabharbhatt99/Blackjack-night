@@ -321,6 +321,172 @@ aside{flex:0 0 320px;background:var(--panel);border-left:1px solid var(--line);d
   .dock{position:relative;left:auto;width:auto;margin:6px 12px 0;padding:10px 14px 12px;gap:8px}
   .dock .dv{font-size:36px}.dock .dres{font-size:24px}.dock .act{height:56px}
 }
+
+/* ---------- phone table (portrait .mp / landscape .ml): real seats, your seat bigger ---------- */
+.mside{display:contents}
+.mtray[hidden]{display:none}
+.mbal,.mpanel,.mclose,.mscrim{display:none}
+.game.m{flex-direction:column}
+.game.ml{flex-direction:row}
+.game.m .tablewrap{flex:1 1 auto;min-height:0}
+.game.m .stagebox{overflow:hidden}
+.game.m .stage{left:0;top:0;transform-origin:top left}
+.game.mp .stagebox{margin:0 8px}
+.game.ml .stagebox{margin:8px;order:1}
+/* header (portrait) / left rail (landscape) */
+.game.m .topbar{flex:none;padding:0 12px;height:60px;align-items:center;gap:10px}
+.game.m .tbl{flex:1;min-width:0;display:flex;flex-direction:column}
+.game.m .topbar b{font-size:17px;margin:0}
+.game.mp .tbsub{display:block;font-size:12px;color:var(--gold2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.game.m .mbal{display:flex;align-items:center;gap:7px;height:36px;padding:0 12px 0 8px;border-radius:99px;background:var(--panel);border:1px solid var(--line2);font:700 15px 'Space Grotesk',sans-serif;color:var(--fg);flex:none}
+.game.m .mbal::before{content:"";width:16px;height:16px;border-radius:50%;background:#2f6fe0;border:2px dashed rgba(255,255,255,.85);box-sizing:border-box}
+.game.m .mpanel{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;flex:none;border-radius:12px;border:1px solid var(--line2);background:var(--panel);color:var(--fg);padding:0;order:9}
+.game.ml .tablewrap{flex-direction:row}
+.game.ml .topbar{order:0;width:60px;height:auto;flex-direction:column;justify-content:flex-start;padding:10px 8px;gap:8px;background:var(--panel);border-right:1px solid var(--line)}
+.game.ml .mpanel{order:0}
+.game.ml .topbar .fsb{order:1;width:44px;height:44px}
+.game.ml .mbal{order:8;margin-top:auto;height:28px;padding:0 6px;font-size:12px;gap:0}
+.game.ml .mbal::before{display:none}
+.game.ml .tbl{order:9;flex:none;text-align:center}
+.game.ml .tbsub{display:none}
+.game.ml .topbar b{font-size:12px;line-height:1.2}
+/* the felt fills the box */
+.game.m .rail{left:0;right:0;top:0;bottom:0;height:auto}
+.game.mp .rail{border-radius:30px 30px 50% 50%/30px 30px 13% 13%}
+.game.mp .felt{inset:9px;border-radius:22px 22px 50% 50%/22px 22px 12% 12%}
+.game.ml .rail{border-radius:18px 18px 50% 50%/18px 18px 34% 34%}
+.game.ml .felt{inset:8px;border-radius:12px 12px 50% 50%/12px 12px 33% 33%}
+.game.m .feltsvg,.game.m .center{display:none}
+.game.m .deck{left:24px;top:30px;transform:rotate(-8deg) scale(.5);transform-origin:top left}
+.game.m .deck .count{top:auto;bottom:-46px;font-size:21px}
+.game.ml .deck .count{bottom:auto;top:50%;left:calc(100% + 18px);transform:translateY(-50%) rotate(8deg)} /* beside the deck, clear of the corner seats */
+.game.m .pool{left:auto;right:24px;top:24px;width:64px;height:auto;min-height:74px;padding:5px 3px 6px;border-radius:14px;gap:3px}
+.game.ml .pool{top:16px;min-height:66px}
+.game.m .pool .kicker{font-size:9px;letter-spacing:.06em;line-height:1.15}
+.game.m .pool .pv{font-size:11px;line-height:1.2}.game.m .pool .pv span{font-size:9px}
+.game.m .pool .pe{font-size:10px;line-height:1.2}
+.game.m .pool .ck{width:22px;height:8px}.game.m .pool .ck+.ck{margin-bottom:-4px}
+/* dealer chair: a name pill over the cards */
+.game.m .seat.dealerseat{width:auto;gap:8px;transform:translate(-50%,0)}
+.game.ml .seat.dealerseat{gap:6px}
+.game.m .dealerseat .plate{display:flex;align-items:center;gap:6px;padding:3px 10px 3px 4px;border-radius:99px;min-width:0;white-space:nowrap}
+.game.m .dealerseat .plate br,.game.m .dealerseat .ps{display:none}
+.game.m .dealerseat .tag{margin:0;font-size:10px}
+.game.m .dealerseat .pn{font-size:13px}.game.m .dealerseat .pc{font-size:12px}
+.game.m .dealerseat .me-badge{font-size:9px;top:-10px;padding:1px 8px}
+.game.m .dealerseat .hand{min-height:0}
+.game.mp .dealerseat .card{width:62px;height:90px;font-size:22px}
+.game.mp .dealerseat .card .s{top:30px;font-size:17px}.game.mp .dealerseat .card .c{font-size:30px}
+.game.mp .dealerseat .card+.card{margin-left:-20px}
+.game.mp .dealerseat.me .card{width:84px;height:120px;font-size:28px}
+.game.mp .dealerseat.me .card .r{left:8px;top:8px}.game.mp .dealerseat.me .card .s{left:9px;top:38px;font-size:22px}.game.mp .dealerseat.me .card .c{right:8px;bottom:6px;font-size:40px}
+.game.mp .dealerseat.me .card+.card{margin-left:-28px}
+.game.ml .dealerseat .card{width:52px;height:76px;font-size:19px}
+.game.ml .dealerseat .card .s{top:26px;font-size:15px}.game.ml .dealerseat .card .c{font-size:24px}
+.game.ml .dealerseat .card+.card{margin-left:-16px}
+.game.ml .dealerseat.me .card{width:62px;height:90px;font-size:22px}
+.game.ml .dealerseat.me .card .s{top:30px;font-size:17px}.game.ml .dealerseat.me .card .c{font-size:30px}
+.game.ml .dealerseat.me .card+.card{margin-left:-20px}
+/* long dealer hands fan tighter so they stay on the felt */
+.game.mp .dealerseat .card:nth-child(n+3){margin-left:-36px}
+.game.mp .dealerseat.me .card:nth-child(n+3){margin-left:-52px}
+.game.ml .dealerseat .card:nth-child(n+3){margin-left:-30px}
+.game.ml .dealerseat.me .card:nth-child(n+3){margin-left:-36px}
+/* seats: fixed-size tiles (sizes match mobSeats) */
+.game.m .seat:not(.dealerseat){justify-content:flex-start;gap:3px;padding:7px 2px 5px;border-radius:12px;background:rgba(6,12,9,.62);border:1px solid rgba(255,255,255,.14);box-sizing:border-box}
+.game.mp .seat.mini{width:58px;height:78px}.game.ml .seat.mini{width:54px;height:76px}
+.game.mp .seat.mid{width:84px;height:104px}.game.ml .seat.mid{width:80px;height:100px}
+.game.m .seat.mid{gap:5px;padding:10px 3px 7px;border-radius:14px}
+.game.m .seat.me:not(.dealerseat){gap:6px;padding:14px 6px 8px;border-radius:16px;border:2px solid var(--gold);background:rgba(26,20,6,.92);box-shadow:0 0 0 3px rgba(227,184,79,.3),0 0 24px rgba(227,184,79,.55);z-index:3}
+.game.mp .seat.me:not(.dealerseat){width:136px;height:162px}
+.game.ml .seat.me:not(.dealerseat){width:116px;height:112px;padding-top:12px}
+.game.m .seat.turn:not(.me):not(.dealerseat){border:2px solid var(--gold);background:rgba(26,20,6,.85);box-shadow:0 0 0 3px rgba(227,184,79,.25),0 0 18px rgba(227,184,79,.45)}
+.game.m .seat:not(.dealerseat):has(.spot.allin){border-color:rgba(227,184,79,.6)}
+.game.m .seat:not(.dealerseat) .plate{order:0;background:none!important;border:0!important;box-shadow:none!important;padding:0!important;min-width:0;max-width:100%;position:static}
+.game.m .seat:not(.dealerseat) .ps,.game.m .seat:not(.dealerseat) .pc,.game.m .seat:not(.dealerseat) .plate br{display:none}
+.game.m .seat:not(.dealerseat) .pn{font-size:11px;max-width:100%}
+.game.m .seat.mini .cpu{display:none}
+.game.m .seat.me:not(.dealerseat) .pn{font-size:14px}
+.game.ml .seat.me:not(.dealerseat) .pn{display:none}
+.game.m .seat:not(.dealerseat) .me-badge{top:-10px;font-size:10px;padding:2px 9px;z-index:2}
+.game.m .seat:not(.dealerseat) .tag{position:absolute;top:-8px;left:50%;transform:translateX(-50%);font-size:8px;padding:1px 5px;margin:0;white-space:nowrap;z-index:1}
+.game.m .seat:not(.dealerseat) .tag.o,.game.m .seat:not(.dealerseat) .tag.out{background:#0d3f27}
+.game.m .seat.me:not(.dealerseat) .tag{top:auto;bottom:-9px}
+.game.m .seat:not(.dealerseat) .hand{order:1;min-height:0}
+.game.m .seat.mini .hand{height:32px}.game.m .seat.mid .hand{height:52px}
+.game.mp .seat.me:not(.dealerseat) .hand{height:90px;margin-right:10px}
+.game.ml .seat.me:not(.dealerseat) .hand{height:66px;margin-right:10px}
+.game.m .seat:not(.dealerseat) .spot{order:2;position:static;margin:0;width:auto;height:auto;border:0;padding:0;box-shadow:none;border-radius:0;display:flex;align-items:center;gap:5px}
+.game.m .seat:not(.dealerseat) .spot.none{display:none}
+.game.m .seat:not(.dealerseat) .spot .piles{display:none}
+.game.m .seat.me:not(.dealerseat) .spot .piles{display:flex}
+.game.m .seat:not(.dealerseat) .spot .ck{width:22px;height:9px}.game.m .seat:not(.dealerseat) .spot .ck+.ck{margin-bottom:-5px}
+.game.m .seat:not(.dealerseat) .amt{position:static;transform:none;font-size:10px;padding:0 5px}
+.game.m .seat.me:not(.dealerseat) .amt{font-size:12px;padding:1px 8px}
+/* cards: mini (rank only), mid, and your own */
+.game.m .seat.mini .card{width:22px;height:32px;font-size:10px}
+.game.m .seat.mini .card+.card{margin-left:-10px}.game.m .seat.mini .card:nth-child(n+4){margin-left:-14px}
+.game.m .seat.mini .card .r{left:2px;top:2px}
+.game.m .seat.mini .card .s,.game.m .seat.mini .card .c{display:none}
+.game.m .seat.mini .face{border-radius:4px}
+.game.m .seat.mini .back{box-shadow:inset 0 0 0 2px #fff,0 2px 4px rgba(0,0,0,.4)}
+.game.m .seat.mini .tot{font-size:10px;padding:0 4px;right:-12px;top:-6px}
+.game.m .seat.mid .card{width:36px;height:52px;font-size:14px}
+.game.m .seat.mid .card+.card{margin-left:-17px}.game.m .seat.mid .card:nth-child(n+4){margin-left:-22px}
+.game.m .seat.mid .card .r{left:4px;top:4px}.game.m .seat.mid .card .s{display:none}.game.m .seat.mid .card .c{right:4px;bottom:3px;font-size:18px}
+.game.m .seat.mid .face{border-radius:6px}
+.game.m .seat.mid .back{box-shadow:inset 0 0 0 2px #fff,0 2px 6px rgba(0,0,0,.4)}
+.game.m .seat.mid .tot{font-size:11px;padding:1px 5px;right:-9px;top:-8px}
+.game.mp .seat.me:not(.dealerseat) .card{width:62px;height:90px;font-size:22px}
+.game.mp .seat.me:not(.dealerseat) .card .s{top:30px;font-size:17px}.game.mp .seat.me:not(.dealerseat) .card .c{font-size:30px}
+.game.mp .seat.me:not(.dealerseat) .card+.card{margin-left:-20px}.game.mp .seat.me:not(.dealerseat) .card:nth-child(n+3){margin-left:-40px}
+.game.ml .seat.me:not(.dealerseat) .card{width:46px;height:66px;font-size:17px}
+.game.ml .seat.me:not(.dealerseat) .card .r{left:5px;top:5px}.game.ml .seat.me:not(.dealerseat) .card .s{left:6px;top:22px;font-size:13px}.game.ml .seat.me:not(.dealerseat) .card .c{right:5px;bottom:3px;font-size:22px}
+.game.ml .seat.me:not(.dealerseat) .card+.card{margin-left:-14px}.game.ml .seat.me:not(.dealerseat) .card:nth-child(n+3){margin-left:-30px}
+.game.m .seat.me:not(.dealerseat) .tot{font-size:15px;padding:2px 8px}
+/* controls tray: bottom (portrait) or right column (landscape) */
+.game.m .mside{display:flex;flex-direction:column;gap:10px;flex:none;background:var(--panel);overflow:auto}
+.game.mp .mside{margin-top:10px;max-height:56%;padding:12px 14px 14px;border-top:1px solid var(--gold);border-radius:22px 22px 0 0;box-shadow:0 -10px 30px rgba(227,184,79,.12)}
+.game.ml .mside{order:2;width:200px;padding:12px;border-left:1px solid var(--gold)}
+.game.m .mside:has(.dock.good){border-color:var(--green)}
+.game.m .mside:has(.dock.bad){border-color:var(--red)}
+.game.m .dock{position:static;width:auto;margin:0;padding:0;border:0;background:none;box-shadow:none;transform:none!important;top:auto!important;gap:10px}
+.game.m .dock .dv{font-size:40px}.game.m .dock .dres{font-size:24px}
+.game.m .dock .act{height:60px;font-size:22px}
+.game.ml .dock{flex:1}
+.game.ml .dock .dv{font-size:36px}
+.game.ml .dock .acts{flex:1;grid-template-columns:1fr;grid-auto-rows:1fr}
+.game.ml .dock .act{height:auto;min-height:64px}
+.game.m .mtray{display:grid;grid-template-columns:1fr 2fr;gap:10px}
+.game.m .mtray[hidden]{display:none}
+.game.m .mtray>*{grid-column:1/-1}
+.game.mp .mtray>.btn.allin{grid-column:1}.game.mp .mtray>.row2{grid-column:2}
+.game.m .mtray .stats{display:none}
+.game.m .mtray .status{padding:10px 12px;border-radius:14px}
+.game.m .mtray .big1{font-size:17px;margin-top:2px}.game.m .mtray .sub{font-size:12px;margin-top:2px}
+.game.m .mtray .bar{margin-top:8px}
+.game.m .mtray .card-p{padding:10px 12px}
+.game.m .mtray .seg button{height:40px}
+.game.m .mtray .chip{width:54px;height:54px}
+.game.m .mtray .btn.allin{height:50px;font-size:13px;letter-spacing:.04em}
+.game.m .mtray .row2{grid-template-columns:1fr 1.6fr;gap:8px}
+.game.ml .mtray .chips{flex-wrap:wrap;justify-content:center;gap:8px}
+.game.ml .mtray .chip{width:48px;height:48px;font-size:14px;border-width:4px}
+.game.ml .mtray .btn.allin{height:42px}
+.game.ml .mtray .row2{grid-template-columns:62px 1fr}
+.game.ml .mtray .row2 .btn{padding:0 6px;font-size:14px;height:46px}
+/* the game panel: a drawer over the table */
+.game.m .mscrim{display:block;position:fixed;inset:0;background:rgba(3,6,5,.62);z-index:39;opacity:0;pointer-events:none;transition:opacity .2s}
+.game.m.open .mscrim{opacity:1;pointer-events:auto}
+.game.m aside{position:fixed;top:0;bottom:0;right:0;left:auto;width:min(340px,88vw);max-height:none;z-index:40;border-left:1px solid var(--line2);border-top:0;border-radius:22px 0 0 22px;box-shadow:-24px 0 50px rgba(0,0,0,.55);padding:14px;gap:12px;overflow:auto;transform:translateX(105%);visibility:hidden;transition:transform .25s ease,visibility 0s linear .25s}
+.game.ml aside{right:auto;left:0;width:min(380px,72vw);border-left:0;border-right:1px solid var(--line2);border-radius:0 20px 20px 0;transform:translateX(-105%)}
+.game.m.open aside{transform:none;visibility:visible;transition:transform .25s ease}
+.game.m .chead{display:flex;gap:10px}.game.m .chead .t{flex:1;font-size:18px}
+.game.m .mclose{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;flex:none;border-radius:12px;border:1px solid var(--line2);background:var(--panel2);color:var(--fg);padding:0}
+.game.m .list{flex:1;min-height:120px;overflow:auto}
+.game.m .list .lh{display:block}
+@media (max-width:740px){.game.ml .mside{width:172px}}
+@media (prefers-reduced-motion:reduce){.game.m aside,.game.m .mscrim{transition:none}}
 </style></head><body><div id="app"></div>
 <script>
 const $=s=>document.querySelector(s);
@@ -349,7 +515,7 @@ function enter(code,create,name,start,total){
   if(!code){err="Enter the lobby code.";return render()}
   err="";want={code,name,create,start,solo:!!total,total};connect();
 }
-function leave(){step="home";joined=false;want=null;S=null;shell=false;prevHands={};prevP={};prevPhase=null;hold=null;sweep=null;ls.del("bj-code");if(ws)ws.close();render()}
+function leave(){step="home";panel=false;joined=false;want=null;S=null;shell=false;prevHands={};prevP={};prevPhase=null;hold=null;sweep=null;ls.del("bj-code");if(ws)ws.close();render()}
 setInterval(()=>send({t:"ping"}),25000);
 function toast(msg){clearTimeout(toastT);let t=$(".toast");if(!t){t=document.createElement("div");t.className="toast";document.body.appendChild(t)}t.textContent=msg;toastT=setTimeout(()=>t.remove(),2500)}
 
@@ -446,7 +612,7 @@ function cardHTML(c){
 /* ---------- deck & card motion ---------- */
 let deckGen=0,deckUntil=0,rotateUntil=0;
 const calm=()=>matchMedia("(prefers-reduced-motion: reduce)").matches;
-const stageScale=()=>$("#stage").getBoundingClientRect().width/1000;
+const stageScale=()=>$("#stage").getBoundingClientRect().width/STW;
 function renderDeck(n){
   const L=$("#layers");if(!L)return;
   const layers=n>0?Math.max(1,Math.min(13,Math.ceil(n/4))):0;
@@ -506,6 +672,7 @@ function seatStatus(p){
 function render(){
   if(!S){shell=false;return renderEntry()}
   if(!shell)buildShell();
+  applyMode();
   beginSettle();
   renderConsole();renderDock();fit();renderTable(); // stage must be scaled (and the dock sized) before positions are measured
 }
@@ -522,7 +689,9 @@ const ico={
   back:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>`,
   arrow:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>`,
   people:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e3b84f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7"/><path d="M18.5 14a6.5 6.5 0 0 1 3 6"/></svg>`,
-  info:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e3b84f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01"/><path d="M11 12h1v5h1"/></svg>`
+  info:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e3b84f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01"/><path d="M11 12h1v5h1"/></svg>`,
+  panel:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg>`,
+  close:`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg>`
 };
 function renderEntry(){
   const name=ls.get("bj-name")||"",errH=err?`<p class="err" role="alert">${esc(err)}</p>`:"";
@@ -595,7 +764,8 @@ let joinCode="";
 function buildShell(){
   shell=true;
   $("#app").innerHTML=`<div class="game">
-  <section class="tablewrap" aria-label="Table"><div class="topbar"><div><b id="rnd"></b><span>Dealer passes clockwise ↻</span></div>${fsBtn()}</div>
+  <section class="tablewrap" aria-label="Table"><div class="topbar"><button class="mpanel" id="mpanel" aria-label="Open game panel" aria-expanded="false">${ico.panel}</button>
+    <div class="tbl"><b id="rnd"></b><span class="tbsub" id="tbsub">Dealer passes clockwise ↻</span></div><div class="mbal" id="mbal" aria-label="Your chips"></div>${fsBtn()}</div>
   <div class="stagebox"><div class="stage" id="stage">
     <div class="rail"><div class="felt"></div>
       <svg class="feltsvg" viewBox="0 0 1000 620" aria-hidden="true"><defs><path id="arcA" d="M 200 250 Q 500 480 800 250"/><path id="arcB" d="M 260 300 Q 500 490 740 300"/></defs>
@@ -605,11 +775,98 @@ function buildShell(){
     <div class="deck" id="deckpile"><div class="slot"></div><div id="layers"></div><div class="count" id="dcount"></div></div>
     <div class="pool" id="pool"></div>
     <div class="center" id="center"></div><div id="seats"></div>
-  </div></div><div class="dock" id="dock" hidden></div></section>
-  <aside id="console" aria-label="Console"></aside></div>`;
+  </div></div><div class="mside"><div class="mtray" id="mtray" hidden></div><div class="dock" id="dock" hidden></div></div></section>
+  <div class="mscrim" id="mscrim"></div><aside id="console" aria-label="Game panel"></aside></div>`;
+  $(".game").classList.toggle("open",panel);
+}
+// ---------- phones: portrait ("p") and landscape ("l") get their own table ----------
+// The felt fills the screen at real size (scaled down only below a minimum, see fit) and seats sit
+// in their real clockwise places. Your seat is drawn bigger so it stays readable; everyone else gets a
+// compact tile (a slightly larger one when the table is small). Tile sizes here match the .game.m CSS.
+let scr="",STW=1000,STH=730,panel=false;
+const mobMode=()=>matchMedia("(max-width:600px) and (orientation:portrait)").matches?"p":matchMedia("(max-height:500px) and (orientation:landscape)").matches?"l":"";
+const MD={p:{mini:{w:58,h:78},mid:{w:84,h:104},me:{w:136,h:162,me:1},rp:9},l:{mini:{w:54,h:76},mid:{w:80,h:100},me:{w:116,h:112,me:1},rp:8}};
+function applyMode(){
+  scr=mobMode();const g=$(".game");if(!g)return;
+  g.classList.toggle("m",!!scr);g.classList.toggle("mp",scr==="p");g.classList.toggle("ml",scr==="l");
+  if(!scr)setPanel(false);
+}
+function setPanel(on){
+  panel=on;const g=$(".game");if(!g)return;
+  g.classList.toggle("open",on);const b=$("#mpanel");if(b)b.setAttribute("aria-expanded",on);
+}
+// Seats follow a U (portrait: down the right, along the bottom, up the left) or an ellipse (landscape),
+// spaced by real tile size; any pair that still touches gets more room, taken from the other gaps.
+function mobLayout(P,W,H,dims,ytop){
+  const n=dims.length;if(!n)return[];
+  const ref=dims.find(d=>!d.me)||dims[0],pts=[];
+  if(P){
+    const y0=ytop+ref.h/2,xr=W-6-ref.w/2,xl=6+ref.w/2,r=Math.min(100,W*.28),yb=H-74,yc=Math.max(y0,yb-r);
+    for(let y=y0;y<=yc;y+=2)pts.push([xr,y]);
+    for(let a=0;a<=90;a+=3){const t=a*Math.PI/180;pts.push([xr-r+r*Math.cos(t),yc+r*Math.sin(t)])}
+    for(let x=xr-r;x>=xl+r;x-=2)pts.push([x,yc+r]);
+    for(let a=90;a<=180;a+=3){const t=a*Math.PI/180;pts.push([xl+r+r*Math.cos(t),yc+r*Math.sin(t)])}
+    for(let y=yc;y>=y0;y-=2)pts.push([xl,y]);
+  }else{
+    const cx=W/2,cy=H*.42,rx=W/2-30,ry=H*.447;
+    for(let a=-4;a<=184;a++){const t=a*Math.PI/180;pts.push([cx+rx*Math.cos(t),cy+ry*Math.sin(t)])}
+  }
+  const cum=[0];
+  for(let i=1;i<pts.length;i++)cum.push(cum[i-1]+Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]));
+  const L=cum[cum.length-1];
+  const at=s=>{let i=cum.findIndex(v=>v>=s);if(i<1)i=1;if(s>=L)i=pts.length-1;
+    const p0=pts[i-1],p1=pts[i],d=Math.hypot(p1[0]-p0[0],p1[1]-p0[1])||1,f=Math.min(1,Math.max(0,(s-cum[i-1])/d));
+    return[p0[0]+(p1[0]-p0[0])*f,p0[1]+(p1[1]-p0[1])*f]};
+  const fb=(P?.12:.33)*H,edge=x=>{const a=W/2,dx=Math.min(1,Math.abs(x-a)/a);return H-fb+fb*Math.sqrt(1-dx*dx)}; // curved bottom of the felt
+  const place=s=>s.map((sv,i)=>{const z=dims[i],p=at(Math.max(0,Math.min(L,sv)));
+    const x=Math.min(W-6-z.w,Math.max(6,p[0]-z.w/2));
+    const y=Math.max(ytop,Math.min(p[1]-z.h/2,Math.min(edge(x+6),edge(x+z.w-6))-4-z.h));
+    return{x,y,w:z.w,h:z.h}});
+  if(n===1)return place([L/2]);
+  let g=[];for(let i=0;i<n-1;i++)g.push((dims[i].w+dims[i+1].w)/2+14);
+  const sum0=g.reduce((a,b)=>a+b,0),want=Math.min(L,sum0*1.7);g=g.map(v=>v*want/sum0);
+  const sOf=g=>{const sum=g.reduce((a,b)=>a+b,0),tot=Math.min(L,sum),s=[(L-tot)/2];g.forEach((v,i)=>s.push(s[i]+v*tot/sum));return s};
+  let s=sOf(g);
+  for(let it=0;it<300;it++){
+    const b=place(s);let moved=false;
+    for(let i=0;i<n-1;i++){const A=b[i],B=b[i+1];
+      const px=Math.min(A.x+A.w,B.x+B.w)-Math.max(A.x,B.x)+6,py=Math.min(A.y+A.h,B.y+B.h)-Math.max(A.y,B.y)+6;
+      if(px>0&&py>0){g[i]+=Math.min(px,py)*.5+1;moved=true}}
+    if(!moved)break;
+    const tot=g.reduce((a,b)=>a+b,0);if(tot>L)g=g.map(v=>v*L/tot);
+    s=sOf(g);
+  }
+  return place(s);
+}
+// seat centres in stage coordinates, for seats 1..n-1 clockwise from the dealer's left
+function mobSeats(n,di){
+  const D=MD[scr],cp=compactFor(n-1),W=STW-2*D.rp,H=STH-2*D.rp,meD=dealerId()===S.me,dims=[];
+  for(let k=1;k<n;k++)dims.push(S.players[(di+k)%n].id===S.me?D.me:cp?D.mini:D.mid);
+  const ytop=scr==="p"?(meD?182:150):H*.25; // clear of the dealer's cards (bigger when they're yours)
+  return mobLayout(scr==="p",W,H,dims,ytop).map(b=>({x:+(b.x+D.rp+b.w/2).toFixed(1),y:+(b.y+D.rp+b.h/2).toFixed(1)}));
+}
+function mobSub(ps,di){
+  if(S.phase==="lobby")return S.solo?"Private table":"Waiting for players";
+  if(gameOver())return"Game over";
+  const me=P(S.me);
+  if(S.dealer===S.me)return`You’re dealing${S.next&&S.next!==S.me?` · ${nameOf(S.next)} deals next`:""}`;
+  if(!me||isOut(me))return`${nameOf(S.dealer)} deals · you’re watching`;
+  let r=0;for(let k=1;k<ps.length;k++){const p=ps[(di+k)%ps.length];if(!isOut(p))r++;if(p.id===S.me)break}
+  return`${nameOf(S.dealer)} deals · ${r<=1?"you deal next round":`you deal in ${r} rounds`}`;
 }
 function fit(){
   const box=$(".stagebox"),st=$("#stage");if(!box||!st)return;
+  if(scr){
+    // the felt keeps a minimum size (bigger for crowded tables) and scales down below it
+    const D=MD[scr],cp=compactFor(S?S.players.length-1:0),bw=box.clientWidth,bh=box.clientHeight;
+    const mn=scr==="p"?(cp?[350,580]:[320,440]):(cp?[560,350]:[460,300]);
+    const s=Math.min(1,(bw-2*D.rp)/mn[0],(bh-2*D.rp)/mn[1]);
+    STW=bw/s;STH=bh/s;
+    st.style.width=STW+"px";st.style.height=STH+"px";st.style.transform=`scale(${s})`;
+    const d=$("#dock");if(d){d.style.top="";d.style.transform=""}
+    return;
+  }
+  STW=1000;STH=730;st.style.width=st.style.height="";
   const s=Math.min(box.clientWidth/1000,box.clientHeight/730);
   st.style.transform=`translate(-50%,-50%) scale(${s})`;
   // desktop: the dock floats on the felt, just under the dealer; phone: it sits in the flow under the table
@@ -618,7 +875,11 @@ function fit(){
   d.style.top=(box.offsetTop+box.clientHeight/2+(222-365)*s)+"px"; // just under the dealer's cards, clear of the bet spots
   d.style.transform=`translateX(-50%) scale(${Math.max(s,.8)})`;
 }
-addEventListener("resize",fit);
+let resizeQ=0;
+addEventListener("resize",()=>{cancelAnimationFrame(resizeQ);resizeQ=requestAnimationFrame(()=>{
+  const was=scr;scr=mobMode();
+  if(S&&shell&&(scr||was))render();else fit(); // phone seats are laid out for the screen size
+})});
 
 // ---------- fullscreen ----------
 const fsEl=()=>document.fullscreenElement||document.webkitFullscreenElement;
@@ -639,23 +900,33 @@ function syncFS(){
 }
 document.addEventListener("fullscreenchange",syncFS);
 document.addEventListener("webkitfullscreenchange",syncFS);
-document.addEventListener("click",e=>{if(e.target.closest("[data-fs]"))toggleFS()});
+document.addEventListener("click",e=>{
+  if(e.target.closest("[data-fs]"))toggleFS();
+  else if(e.target.closest("#mpanel"))setPanel(!panel);
+  else if(e.target.closest("#mscrim"))setPanel(false);
+});
 
 function renderTable(){
   $("#rnd").textContent=S.phase==="lobby"?"Lobby":gameOver()?"Game over":`Round ${S.round}`;
   const did=dealerId(),ps=S.players,n=ps.length,di=Math.max(0,ps.findIndex(p=>p.id===did));
   const holder=$("#seats"),seen=new Set(),flights=[],flips=[],slides=[],tots=[];
   const busts=[],losers=[],winners=[],poolHad=!!$("#pool .piles");
-  $("#stage").classList.toggle("compact",compactFor(n-1)); // before seats are measured for bet spots
+  const cp=compactFor(n-1),mpos=scr?mobSeats(n,di):null;
+  $("#stage").classList.toggle("compact",!scr&&cp); // before seats are measured for bet spots
+  const sub=$("#tbsub");if(sub)sub.textContent=scr?mobSub(ps,di):"Dealer passes clockwise ↻";
+  const mb=$("#mbal"),mine0=P(S.me);if(mb&&mine0)mb.textContent=dispChips(mine0);
   ps.forEach((p,i)=>{
     seen.add(p.id);
     let el=holder.querySelector(`[data-id="${p.id}"]`);
     if(!el){el=document.createElement("div");el.className="seat";el.dataset.id=p.id;el.innerHTML=`<div class="hand"></div><div class="plate"></div><div class="spot none"></div>`;holder.appendChild(el)}
-    const k=(i-di+n)%n,pos=seatPos(k,n-1),isD=k===0,mine=p.id===S.me,turn=S.turn===p.id;
+    const k=(i-di+n)%n,isD=k===0,mine=p.id===S.me,turn=S.turn===p.id;
+    const pos=!scr?seatPos(k,n-1):isD?{x:STW/2,y:MD[scr].rp+8}:mpos[k-1];
     if(el.style.left&&(el.style.left!==pos.x+"px"||el.style.top!==pos.y+"px"))rotateUntil=Date.now()+900;
     el.style.left=pos.x+"px";el.style.top=pos.y+"px";
     el.classList.toggle("dealerseat",isD);el.classList.toggle("off",!p.online);
     el.classList.toggle("out",isOut(p)&&p.id!==S.winner);el.classList.toggle("me",mine);
+    el.classList.toggle("mini",!!scr&&!isD&&!mine&&cp);el.classList.toggle("mid",!!scr&&!isD&&!mine&&!cp);
+    el.classList.toggle("turn",turn);
     const handEl=el.children[0],plateEl=el.children[1],spotEl=el.children[2];
     handEl.classList.toggle("big",isD||mine);
     // cards: only rebuild a hand when it actually changed, so in-flight animations survive unrelated updates
@@ -680,7 +951,8 @@ function renderTable(){
     // bet spot: the chips on the felt in front of this seat
     const ss=spotState(p,isD);
     spotEl.className=`spot ${ss?ss.cls:"none"} ${mine&&ss?"mine":""}`;
-    if(!isD){const o=spotOff(pos,el);spotEl.style.left=`calc(50% + ${o.x}px)`;spotEl.style.top=`calc(50% + ${o.y}px)`}
+    if(scr){spotEl.style.left=spotEl.style.top=""} // phones: the bet sits inside the seat tile
+    else if(!isD){const o=spotOff(pos,el);spotEl.style.left=`calc(50% + ${o.x}px)`;spotEl.style.top=`calc(50% + ${o.y}px)`}
     const sh=spotHTML(ss);if(spotEl._h!==sh){spotEl.innerHTML=sh;spotEl._h=sh}
     // chip motion is only for transitions seen live in this round (not on reconnect / first paint)
     const was=prevP[p.id],live=was&&was.round===S.round&&!isD;
@@ -819,6 +1091,7 @@ function renderDock(){
   }
   d.hidden=!h;d.className=`dock ${cls}`;
   if(d._h!==h){d.innerHTML=h;d._h=h}
+  const mt=$("#mtray");if(mt)mt.hidden=!scr||!!h; // phones: the dock takes over the tray when it has something
   $("#center").style.visibility=h?"hidden":"";
   const on=(id,f)=>{const e=d.querySelector("#"+id);if(e)e.onclick=f};
   on("hit",()=>send({t:"hit"}));on("stand",()=>send({t:"stand"}));on("next",()=>send({t:"next"}));
@@ -910,11 +1183,16 @@ function renderConsole(){
     <div class="sub">${sh&&dp?`${esc(dp.name)} is knocked out · `:""}${S.next?`Next dealer: ${esc(nameOf(S.next))}`:""}</div></div>
     ${sh?shareHTML(sh):r?stats("This round",r.owed?`+${r.dl} of ${r.owed}`:sign(r.dl),r.dl>0?"g":""):""}`;
   }
+  // phones: the round's controls live in the tray under (or beside) the table, the rest in the panel
+  const mt=$("#mtray"),inTray=!!scr&&!!mt,off=S.off?`<div class="err">Reconnecting…</div>`:"";
+  if(mt)mt.innerHTML=inTray?off+main:"";
   $("#console").innerHTML=`<div class="chead"><div class="t">Blackjack Night</div>
-  ${S.solo?`<span class="cpu" style="font-size:11px;padding:3px 9px">VS COMPUTER</span>`:`<button class="code" id="copy" aria-label="Copy lobby code">${esc(want?.code)}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a9bcb1" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>`}</div>
-  ${S.off?`<div class="err">Reconnecting…</div>`:""}${main}<div class="list">${listHTML()}</div>
+  ${S.solo?`<span class="cpu" style="font-size:11px;padding:3px 9px">VS COMPUTER</span>`:`<button class="code" id="copy" aria-label="Copy lobby code">${esc(want?.code)}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a9bcb1" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>`}
+  <button class="mclose" id="mclose" aria-label="Close panel">${ico.close}</button></div>
+  ${off}${inTray?"":main}<div class="list">${listHTML()}</div>
   <div class="foot"><button class="btn ghost" id="leave">${S.solo?"Leave table":"Leave lobby"}</button>${host&&S.phase!=="lobby"?`<button class="btn ghost" id="reset">Reset game</button>`:""}</div>`;
-  const on=(id,f)=>{const e=$("#console #"+id);if(e)e.onclick=f};
+  const on=(id,f)=>{const e=document.querySelector("#console #"+id)||document.querySelector("#mtray #"+id);if(e)e.onclick=f};
+  on("mclose",()=>setPanel(false));
   on("start",()=>send({t:"start"}));
   on("clear",()=>send({t:"clear"}));on("ready",()=>send({t:"ready"}));on("allin",()=>send({t:"allin"}));on("leave",leave);
   on("fd",()=>send({t:"dshow",show:false}));on("fu",()=>send({t:"dshow",show:true}));
@@ -923,6 +1201,7 @@ function renderConsole(){
   document.querySelectorAll("[data-bet]").forEach(b=>b.onclick=()=>send({t:"bet",amount:+b.dataset.bet}));
 }
 addEventListener("keydown",e=>{
+  if(e.key==="Escape"&&panel){setPanel(false);return}
   if((e.key==="f"||e.key==="F")&&!e.repeat&&!e.ctrlKey&&!e.metaKey&&!e.altKey&&!/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)){toggleFS();return}
   if(!S||S.phase!=="playing"||S.turn!==S.me||e.target.tagName==="INPUT"||e.repeat)return;
   if(e.key==="h"||e.key==="H")send({t:"hit"});
