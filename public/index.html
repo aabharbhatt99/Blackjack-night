@@ -222,6 +222,49 @@ input:focus{outline:2px solid var(--gold);outline-offset:1px}
 .pool.broke{border-color:rgba(255,157,143,.6);background:rgba(0,0,0,.25)}
 .pool.broke .kicker{color:var(--red)}
 
+/* ---------- bust / blackjack marks: stay in full colour (unlike knocked out), stamp across the cards ---------- */
+.seat.bust:not(.mkw) .plate{background:#240d0b;border:2px solid #ff7b6b}
+.seat.bust:not(.mkw) .plate.mine{box-shadow:0 0 18px rgba(255,90,70,.35)}
+.seat.bust:not(.mkw) .plate.mine .pn{color:#ffb3a8}
+.seat.bj:not(.mkw) .plate{background:#221903;border:2px solid var(--gold);box-shadow:0 0 22px rgba(227,184,79,.35)}
+.seat:not(.mkw)>.hand.busted .front{filter:grayscale(.55) brightness(.62)}
+.seat:not(.mkw)>.hand.busted::after,.seat:not(.mkw)>.hand.bjh::after{content:"";position:absolute;inset:-4px -6px;border-radius:12px;pointer-events:none;z-index:2}
+.seat:not(.mkw)>.hand.busted::after{background:rgba(200,40,30,.28);box-shadow:0 0 0 2px rgba(255,123,107,.55)}
+.seat:not(.mkw)>.hand.bjh::after{box-shadow:0 0 0 2px #f3d27e,0 0 28px rgba(227,184,79,.75)}
+.seat:not(.mkw)>.hand.busted .tot{border-color:var(--red);color:var(--red);background:#2a0d0a}
+.seat:not(.mkw)>.hand.bjh .tot{background:var(--gold);color:#2a1e00;border-color:#fff3cf}
+.stamp{position:absolute;left:50%;top:50%;z-index:4;display:flex;align-items:center;gap:6px;white-space:nowrap;font:700 20px/1 'Space Grotesk',sans-serif;letter-spacing:.12em;padding:7px 13px 7px 10px;border-radius:10px;transform:translate(-50%,-50%) rotate(-10deg);pointer-events:none}
+.stamp.sb{color:#fff;background:#c8322a;border:2px solid #ffb3a8;box-shadow:0 6px 18px rgba(0,0,0,.5),0 0 22px rgba(255,90,70,.55)}
+.stamp.sj{color:#2a1e00;background:linear-gradient(180deg,#f6d77f,#e3b84f);border:2px solid #fff3cf;box-shadow:0 6px 18px rgba(0,0,0,.5),0 0 26px rgba(243,210,126,.8);font-size:17px}
+.stamp .ss{display:none}
+.stage.compact .seat:not(.dealerseat) .stamp{font-size:15px;padding:5px 9px 5px 7px}
+.stage.compact .seat:not(.dealerseat) .stamp.sj{font-size:13px}
+@keyframes stampIn{0%{transform:translate(-50%,-50%) rotate(-10deg) scale(2.4);opacity:0}60%{transform:translate(-50%,-50%) rotate(-10deg) scale(.92);opacity:1}100%{transform:translate(-50%,-50%) rotate(-10deg) scale(1);opacity:1}}
+.tag.bust{background:#c8322a;color:#fff}
+.tag.bj{background:var(--gold);color:#2a1e00}
+.li.bust{background:#1e0c0b;border-color:#7a2a22}
+.li.bj{background:var(--goldbg);border-color:#7a6228}
+.list .li.me.bust{background:#1e0c0b;border-color:#ff7b6b}
+.li .av.x{background:#c8322a;color:#fff}.li .av.s{background:var(--gold);color:#2a1e00}
+.seat.mkw .tag.bust,.seat.mkw .tag.bj{visibility:hidden} /* held until the stamp lands */
+/* call-out: the moment someone busts or hits blackjack (sits where the dock goes, the dock waits) */
+.callout{position:absolute;left:50%;top:0;width:400px;box-sizing:border-box;padding:16px 20px 18px;border-radius:22px;text-align:center;z-index:9;display:flex;flex-direction:column;align-items:center;gap:5px;transform-origin:top center}
+.callout[hidden]{display:none}
+.callout.bad{background:rgba(36,8,7,.96);border:2px solid #ff7b6b;box-shadow:0 18px 44px rgba(0,0,0,.6),0 0 40px rgba(255,90,70,.35)}
+.callout.gold{background:rgba(26,20,6,.96);border:2px solid var(--gold);box-shadow:0 18px 44px rgba(0,0,0,.6),0 0 46px rgba(227,184,79,.45)}
+.callout .who{font-size:13px;font-weight:600;letter-spacing:.12em}
+.callout .word{display:flex;align-items:center;gap:12px;font:700 58px/1 'Space Grotesk',sans-serif;letter-spacing:.06em}
+.callout.gold .word{font-size:50px}
+.callout .sub{font-size:14px}
+.callout .nx{font-size:12px;color:var(--muted);margin-top:2px}
+.callout.bad .who{color:#ffb3a8}.callout.bad .word{color:#ff8a7a}.callout.bad .sub{color:#e6d5d2}
+.callout.gold .who,.callout.gold .word{color:var(--gold2)}.callout.gold .sub{color:#eadfc2}
+.game.co-on .dock{display:none}
+.game.co-on .center{visibility:hidden!important}
+@keyframes coIn{0%{opacity:0;translate:0 14px;scale:.95}100%{opacity:1;translate:0 0;scale:1}}
+.callout.show{animation:coIn .28s cubic-bezier(.2,.8,.2,1) both}
+@media (prefers-reduced-motion:reduce){.callout.show{animation:none}}
+
 /* ---------- knocked out / bankrupt / game over ---------- */
 .seat.out{opacity:.45;filter:grayscale(1)}
 .seat.out.me{opacity:.7;filter:grayscale(.6)}
@@ -320,6 +363,8 @@ aside{flex:0 0 320px;background:var(--panel);border-left:1px solid var(--line);d
   .list{flex:none;max-height:none}
   .dock{position:relative;left:auto;width:auto;margin:6px 12px 0;padding:10px 14px 12px;gap:8px}
   .dock .dv{font-size:36px}.dock .dres{font-size:24px}.dock .act{height:56px}
+  .callout{position:relative;left:auto;width:auto;margin:6px 12px 0;padding:10px 14px 12px;gap:3px}
+  .callout .word{font-size:42px}.callout.gold .word{font-size:36px}
 }
 
 /* ---------- phone table (portrait .mp / landscape .ml): real seats, your seat bigger ---------- */
@@ -444,12 +489,40 @@ aside{flex:0 0 320px;background:var(--panel);border-left:1px solid var(--line);d
 .game.ml .seat.me:not(.dealerseat) .card .r{left:5px;top:5px}.game.ml .seat.me:not(.dealerseat) .card .s{left:6px;top:22px;font-size:13px}.game.ml .seat.me:not(.dealerseat) .card .c{right:5px;bottom:3px;font-size:22px}
 .game.ml .seat.me:not(.dealerseat) .card+.card{margin-left:-14px}.game.ml .seat.me:not(.dealerseat) .card:nth-child(n+3){margin-left:-30px}
 .game.m .seat.me:not(.dealerseat) .tot{font-size:15px;padding:2px 8px}
+/* phone tiles: bust turns the tile red, blackjack gold; the stamp shrinks to the tile */
+.game.m .seat.bust:not(.dealerseat):not(.mkw){border:2px solid #ff7b6b;background:rgba(40,10,8,.88);box-shadow:0 0 14px rgba(255,90,70,.35)}
+.game.m .seat.bust.me:not(.dealerseat):not(.mkw){box-shadow:0 0 0 3px rgba(255,123,107,.3),0 0 22px rgba(255,90,70,.5)}
+.game.m .seat.bust.me:not(.dealerseat):not(.mkw) .pn{color:#ffb3a8}
+.game.m .seat.bust.me:not(.mkw) .me-badge{background:#ff9d8f;color:#2a0d0a;box-shadow:0 0 12px rgba(255,90,70,.6)}
+.game.m .seat.bj:not(.dealerseat):not(.mkw){border:2px solid var(--gold);background:rgba(34,25,3,.92);box-shadow:0 0 18px rgba(227,184,79,.55)}
+.game.m .hand.busted::after,.game.m .hand.bjh::after{inset:-3px -4px;border-radius:8px}
+.game.m .seat:not(.dealerseat) .stamp{font-size:10px;gap:3px;padding:3px 6px 3px 5px;border-radius:6px;letter-spacing:.08em}
+.game.m .seat:not(.dealerseat) .stamp svg{width:9px;height:9px}
+.game.m .seat:not(.dealerseat) .stamp.sj{font-size:8px;letter-spacing:.04em}
+.game.m .seat.mini .stamp{font-size:8px;padding:2px 4px}
+.game.m .seat.mini .stamp svg,.game.m .seat.mini .stamp .sw{display:none}.game.m .seat.mini .stamp .ss{display:inline}
+.game.m .seat.me:not(.dealerseat) .stamp{font-size:17px;gap:5px;padding:6px 11px 6px 8px;border-radius:9px}
+.game.m .seat.me:not(.dealerseat) .stamp svg{width:16px;height:16px}
+.game.m .seat.me:not(.dealerseat) .stamp.sj{font-size:13px}
+.game.m .dealerseat .stamp{font-size:15px;padding:5px 9px 5px 7px}
+.game.ml .seat.me:not(.dealerseat) .stamp{font-size:12px;padding:4px 7px}
+.game.ml .seat.me:not(.dealerseat) .stamp.sj{font-size:10px}
 /* controls tray: bottom (portrait) or right column (landscape) */
 .game.m .mside{display:flex;flex-direction:column;gap:10px;flex:none;background:var(--panel);overflow:auto}
 .game.mp .mside{margin-top:10px;max-height:56%;padding:12px 14px 14px;border-top:1px solid var(--gold);border-radius:22px 22px 0 0;box-shadow:0 -10px 30px rgba(227,184,79,.12)}
 .game.ml .mside{order:2;width:200px;padding:12px;border-left:1px solid var(--gold)}
 .game.m .mside:has(.dock.good){border-color:var(--green)}
 .game.m .mside:has(.dock.bad){border-color:var(--red)}
+.game.m .callout{position:static;width:auto;margin:0;padding:2px 0;border:0;background:none;box-shadow:none;transform:none!important;top:auto!important;gap:4px}
+.game.m .callout .who{font-size:12px;letter-spacing:.1em}
+.game.m .callout .word{font-size:46px;gap:10px}.game.m .callout.gold .word{font-size:38px}
+.game.m .callout .word svg{width:36px;height:36px}
+.game.m .callout .sub{font-size:13px}
+.game.ml .callout .word{font-size:30px}.game.ml .callout.gold .word{font-size:22px}.game.ml .callout .word svg{width:24px;height:24px}
+.game.m.co-on .mtray{display:none}
+.game.m .mside:has(.callout.bad:not([hidden])){border-color:var(--red);background:#220b09;box-shadow:0 -10px 34px rgba(255,90,70,.25)}
+.game.m .mside:has(.callout.gold:not([hidden])){border-color:var(--gold);background:#1c1505;box-shadow:0 -10px 34px rgba(227,184,79,.3)}
+.game.mp .mside:has(.callout:not([hidden])){border-top-width:2px}
 .game.m .dock{position:static;width:auto;margin:0;padding:0;border:0;background:none;box-shadow:none;transform:none!important;top:auto!important;gap:10px}
 .game.m .dock .dv{font-size:40px}.game.m .dock .dres{font-size:24px}
 .game.m .dock .act{height:60px;font-size:22px}
@@ -633,7 +706,7 @@ function flyFromDeck(el,delay,up){
     {transform:`translate(${dx}px,${dy-14}px) rotate(-8deg) rotateY(180deg) scale(1.06)`,offset:.12},
     {transform:`translate(${dx*.45}px,${dy*.45-40}px) rotate(-3deg) rotateY(${up?90:180}deg) scale(1.1)`,offset:.55},
     {transform:`translate(0,0) rotate(0deg) ${end} scale(1)`,offset:1}
-  ],{duration:520,delay,easing:"cubic-bezier(.3,.7,.25,1)",fill:"backwards"}).onfinish=()=>{el.classList.remove("flying");if(!seat.querySelector(".flying"))seat.style.zIndex=""};
+  ],{duration:650,delay,easing:"cubic-bezier(.3,.7,.25,1)",fill:"backwards"}).onfinish=()=>{el.classList.remove("flying");if(!seat.querySelector(".flying"))seat.style.zIndex=""};
 }
 // knocked out = 0 chips. In the round they went out we still show their result first.
 const isOut=p=>p.outRound!=null&&(S.phase!=="results"||!!S.winner||p.outRound<S.round);
@@ -652,7 +725,7 @@ function seatStatus(p){
   if(isOut(p))return{t:"Knocked out · watching",c:""};
   if(d){
     if(S.phase==="betting")return{t:"Waiting for bets",c:""};
-    if(S.turn===p.id)return{t:"Playing…",c:"goldt"};
+    if(S.turn===p.id&&!S.hold)return{t:"Playing…",c:"goldt"};
     return{t:p.revealed?"":"Plays last",c:""};
   }
   if(S.phase==="betting"){
@@ -663,15 +736,62 @@ function seatStatus(p){
     return{t:p.bet?`Betting · ${p.bet}`:"Choosing bet…",c:"goldt"};
   }
   if(!p.in)return{t:"Sits out",c:""};
-  if(S.turn===p.id)return{t:`Playing · bet ${p.bet}`,c:"goldt"};
-  const m={bust:["Bust","lose"],bj:["Blackjack!","win"],stand:["Stands","" ],wait:[`Waiting · bet ${p.bet}`,""]}[p.status]||["",""];
+  if(S.turn===p.id&&!S.hold)return{t:`Playing · bet ${p.bet}`,c:"goldt"};
+  if(p.status==="stand"&&val(p.hand)===21)return{t:"Blackjack · 21 pays 1 to 1",c:"win"};
+  const m={bust:["Bust","lose"],bj:["Blackjack! · 3 to 2","win"],stand:["Stands","" ],wait:[`Waiting · bet ${p.bet}`,""]}[p.status]||["",""];
   return{t:m[0],c:m[1]};
+}
+
+// bust / blackjack: a dealt hand that's gone over 21, or any 21 (two cards = a natural, paid 3 to 2;
+// more cards = still marked blackjack, paid 1 to 1). Shown until the next deal.
+function markOf(p){
+  if((S.phase!=="playing"&&S.phase!=="results")||gameOver())return"";
+  if(!p.hand.length||!(p.in||p.id===S.dealer))return"";
+  const vis=p.hand.filter(c=>c!==null);
+  if(vis.length<p.hand.length)return"";
+  const v=val(vis);
+  return v>21?"bust":v===21?"bj":"";
+}
+const natural=p=>p.status==="bj"; // the server only sets "bj" for 21 with the first two cards
+const XI=s=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>`;
+const XC=`<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8.5 8.5l7 7M15.5 8.5l-7 7"/></svg>`;
+const STAR=s=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z"/></svg>`;
+const stampHTML=m=>m==="bust"?`<span class="stamp sb">${XI(18)}<span class="sw">BUST</span><span class="ss">BUST</span></span>`
+  :m==="bj"?`<span class="stamp sj">${STAR(17)}<span class="sw">BLACKJACK</span><span class="ss">BJ</span></span>`:"";
+// the call-out: shown once the card has landed, for 1.8s, in the dock's place (phones: the bottom tray)
+let coT1=0,coT2=0;
+const RN={A:"ACE",K:"KING",Q:"QUEEN",J:"JACK"};
+function hideCallout(){clearTimeout(coT1);clearTimeout(coT2);const co=$("#callout");if(co)co.hidden=true;const g=$(".game");if(g)g.classList.remove("co-on")}
+function showCallout(p,mk,delay){
+  hideCallout();
+  const me=p.id===S.me,isD=p.id===S.dealer,nm=me?(isD?"YOU (DEALER)":"YOU"):(isD?"DEALER ":"")+esc(p.name.toUpperCase());
+  const ranks=p.hand.filter(c=>c!==null).map(c=>c.slice(0,-1));
+  let cls,who,word,sub,nx="";
+  if(mk==="bust"){
+    cls="bad";who=`${nm} · ${ranks.join(" + ")} = ${val(p.hand)}`;word=`${XC}<span>BUST</span>`;
+    sub=isD?`${me?"You":"The dealer"} went over 21 · everyone still in wins`:me?`You went over 21 · −${p.bet} this round`:`Went over 21 · ${p.bet} chips go to the dealer pool`;
+  }else{
+    const nat=natural(p);cls="gold";word=`${STAR(40)}<span>BLACKJACK!</span>`;
+    who=nat?`${nm} · ${ranks.map(r=>RN[r]||r).join(" + ")}`:`${nm} · ${ranks.join(" + ")} = 21`;
+    if(isD)sub=nat?"21 with two cards · beats every hand except a player’s two-card 21":`21 with ${ranks.length} cards · ties any other 21, loses to a two-card 21`;
+    else sub=nat?`21 with two cards · pays 3 to 2, +${Math.floor(p.bet*1.5)}`:`21 with ${ranks.length} cards · pays 1 to 1, +${p.bet}`;
+    if(!isD&&S.phase==="playing")nx=nat?"Paid when the dealer plays · a dealer two-card 21 makes it a push"
+      :"Paid when the dealer plays · dealer 21 is a push, a dealer two-card 21 wins";
+  }
+  const html=`<div class="who">${who}</div><div class="word">${word}</div><div class="sub">${sub}</div>${nx?`<div class="nx">${nx}</div>`:""}`;
+  const held=!!S.hold;
+  coT1=setTimeout(()=>{
+    const co=$("#callout"),g=$(".game");if(!co||!g)return;
+    co.className=`callout ${cls}`;co.innerHTML=html;co.hidden=false;void co.offsetWidth;co.classList.add("show");g.classList.add("co-on");
+    coT2=setTimeout(hideCallout,held?6000:2200); // normally cleared by render() when the hold ends
+  },delay);
 }
 
 /* ---------- render ---------- */
 function render(){
   if(!S){shell=false;return renderEntry()}
   if(!shell)buildShell();
+  if(!S.hold)hideCallout(); // the table moved on: the call-out goes (a new one may be scheduled below)
   applyMode();
   beginSettle();
   renderConsole();renderDock();fit();renderTable(); // stage must be scaled (and the dock sized) before positions are measured
@@ -775,7 +895,7 @@ function buildShell(){
     <div class="deck" id="deckpile"><div class="slot"></div><div id="layers"></div><div class="count" id="dcount"></div></div>
     <div class="pool" id="pool"></div>
     <div class="center" id="center"></div><div id="seats"></div>
-  </div></div><div class="mside"><div class="mtray" id="mtray" hidden></div><div class="dock" id="dock" hidden></div></div></section>
+  </div></div><div class="mside"><div class="mtray" id="mtray" hidden></div><div class="dock" id="dock" hidden></div><div class="callout" id="callout" role="status" aria-live="polite" hidden></div></div></section>
   <div class="mscrim" id="mscrim"></div><aside id="console" aria-label="Game panel"></aside></div>`;
   $(".game").classList.toggle("open",panel);
 }
@@ -871,9 +991,10 @@ function fit(){
   st.style.transform=`translate(-50%,-50%) scale(${s})`;
   // desktop: the dock floats on the felt, just under the dealer; phone: it sits in the flow under the table
   const d=$("#dock");if(!d)return;
-  if(matchMedia("(max-width:860px)").matches){d.style.top="";d.style.transform="";return}
+  if(matchMedia("(max-width:860px)").matches){d.style.top="";d.style.transform="";const co=$("#callout");if(co)co.style.top=co.style.transform="";return}
   d.style.top=(box.offsetTop+box.clientHeight/2+(222-365)*s)+"px"; // just under the dealer's cards, clear of the bet spots
   d.style.transform=`translateX(-50%) scale(${Math.max(s,.8)})`;
+  const co=$("#callout");if(co){co.style.top=d.style.top;co.style.transform=d.style.transform} // the call-out takes the dock's place
 }
 let resizeQ=0;
 addEventListener("resize",()=>{cancelAnimationFrame(resizeQ);resizeQ=requestAnimationFrame(()=>{
@@ -910,7 +1031,7 @@ function renderTable(){
   $("#rnd").textContent=S.phase==="lobby"?"Lobby":gameOver()?"Game over":`Round ${S.round}`;
   const did=dealerId(),ps=S.players,n=ps.length,di=Math.max(0,ps.findIndex(p=>p.id===did));
   const holder=$("#seats"),seen=new Set(),flights=[],flips=[],slides=[],tots=[];
-  const busts=[],losers=[],winners=[],poolHad=!!$("#pool .piles");
+  const busts=[],losers=[],winners=[],poolHad=!!$("#pool .piles"),stamps=[];
   const cp=compactFor(n-1),mpos=scr?mobSeats(n,di):null;
   $("#stage").classList.toggle("compact",!scr&&cp); // before seats are measured for bet spots
   const sub=$("#tbsub");if(sub)sub.textContent=scr?mobSub(ps,di):"Dealer passes clockwise ↻";
@@ -919,9 +1040,10 @@ function renderTable(){
     seen.add(p.id);
     let el=holder.querySelector(`[data-id="${p.id}"]`);
     if(!el){el=document.createElement("div");el.className="seat";el.dataset.id=p.id;el.innerHTML=`<div class="hand"></div><div class="plate"></div><div class="spot none"></div>`;holder.appendChild(el)}
-    const k=(i-di+n)%n,isD=k===0,mine=p.id===S.me,turn=S.turn===p.id;
+    const k=(i-di+n)%n,isD=k===0,mine=p.id===S.me,turn=S.turn===p.id&&!S.hold;
     const pos=!scr?seatPos(k,n-1):isD?{x:STW/2,y:MD[scr].rp+8}:mpos[k-1];
-    if(el.style.left&&(el.style.left!==pos.x+"px"||el.style.top!==pos.y+"px"))rotateUntil=Date.now()+900;
+    // a real seat move (the chair rotates) holds the deal; sub-pixel float noise (phones: STW/2) doesn't
+    if(el.style.left&&(Math.abs(parseFloat(el.style.left)-pos.x)>1||Math.abs(parseFloat(el.style.top)-pos.y)>1))rotateUntil=Date.now()+900;
     el.style.left=pos.x+"px";el.style.top=pos.y+"px";
     el.classList.toggle("dealerseat",isD);el.classList.toggle("off",!p.online);
     el.classList.toggle("out",isOut(p)&&p.id!==S.winner);el.classList.toggle("me",mine);
@@ -935,7 +1057,10 @@ function renderTable(){
     if(!p.hand.length&&isD&&S.phase==="betting")cards=`<div class="card ghost"></div><div class="card ghost"></div>`;
     const vis=p.hand.filter(c=>c!==null);
     const tot=vis.length&&p.hand.length?`<span class="tot">${val(vis)}${vis.length<p.hand.length?"+?":""}</span>`:"";
-    const hh=cards+tot;
+    const mk=markOf(p),pw=prevP[p.id],newMark=!!mk&&!!pw&&pw.round===S.round&&pw.mark!==mk; // seen live, not on reconnect
+    el.classList.toggle("bust",mk==="bust");el.classList.toggle("bj",mk==="bj");
+    handEl.classList.toggle("busted",mk==="bust");handEl.classList.toggle("bjh",mk==="bj");
+    const hh=cards+tot+stampHTML(mk);
     if(handEl._h!==hh){
       const oldX=[...handEl.querySelectorAll(".card")].map(e=>e.getBoundingClientRect().left);
       handEl.innerHTML=hh;handEl._h=hh;
@@ -946,6 +1071,7 @@ function renderTable(){
       });
       flights.push(...added);
       const t=handEl.querySelector(".tot");if(t&&added.length)tots.push({el:t,last:added[added.length-1]});
+      const se=handEl.querySelector(".stamp");if(se&&newMark)stamps.push({el:se,seat:el,p,mk,last:added[added.length-1]});
     }
     prevHands[p.id]=p.hand.slice();
     // bet spot: the chips on the felt in front of this seat
@@ -967,6 +1093,7 @@ function renderTable(){
       broke?`<span class="tag red">BANKRUPT</span><br>`:
       isD?`<span class="tag">${S.phase==="lobby"?"FIRST DEALER":"DEALER"}</span><br>`:
       isOut(p)?`<span class="tag out">OUT</span><br>`:
+      mk==="bust"?`<span class="tag bust">BUST</span><br>`:mk==="bj"?`<span class="tag bj">BLACKJACK</span><br>`:
       (p.id===S.next?`<span class="tag o">NEXT DEALER</span><br>`:"");
     const ph=`${mine?`<span class="me-badge">YOU</span>`:""}${tags}<div class="pn">${esc(p.name)}${p.bot?`<span class="cpu">CPU</span>`:""}</div>
       ${st.t?`<div class="ps ${st.c}">${esc(st.t)}</div>`:""}<div class="pc">${dispChips(p)} chips</div>`;
@@ -980,14 +1107,25 @@ function renderTable(){
   if(calm()||!flights.length){if(calm()||Date.now()>deckUntil){deckGen++;renderDeck(S.deck)}} // don't cut a running deal's countdown short
   else{
     flights.sort((a,b)=>a.j-b.j||(a.k||1e3)-(b.k||1e3));
-    const gap=170,gen=++deckGen,wait=calm()?0:Math.max(0,rotateUntil-Date.now());let left=S.deck+flights.length;renderDeck(left);deckUntil=Date.now()+wait+flights.length*gap;
+    const gap=260,gen=++deckGen,wait=calm()?0:Math.max(0,rotateUntil-Date.now());let left=S.deck+flights.length;renderDeck(left);deckUntil=Date.now()+wait+flights.length*gap;
     flights.forEach((f,i)=>{f.delay=wait+i*gap;
       if(wait){f.el.style.visibility="hidden";setTimeout(()=>{f.el.style.visibility="";if(f.el.isConnected)flyFromDeck(f.el,i*gap,f.up)},wait)}else flyFromDeck(f.el,f.delay,f.up);setTimeout(()=>{if(gen===deckGen)renderDeck(--left)},f.delay)});
-    tots.forEach(t=>t.el.animate([{opacity:0},{opacity:1}],{duration:200,delay:t.last.delay+480,fill:"backwards"}));
+    tots.forEach(t=>t.el.animate([{opacity:0},{opacity:1}],{duration:200,delay:t.last.delay+600,fill:"backwards"}));
   }
   const s=stageScale();
   slides.forEach(({el,x})=>{const dx=(x-el.getBoundingClientRect().left)/s;if(dx&&!calm())el.animate([{translate:`${dx}px 0`},{translate:"0 0"}],{duration:300,easing:"ease-out"})});
-  flips.forEach((el,i)=>el.animate([{transform:"rotateY(180deg)"},{transform:"rotateY(0deg)"}],{duration:calm()?1:500,delay:i*120,easing:"ease",fill:"backwards"}));
+  flips.forEach((el,i)=>el.animate([{transform:"rotateY(180deg)"},{transform:"rotateY(0deg)"}],{duration:calm()?1:600,delay:i*160,easing:"ease",fill:"backwards"}));
+  // bust / blackjack: the stamp lands once the card that made it has, the seat shakes on a bust, then the call-out
+  stamps.forEach(x=>{
+    x.at=x.last&&x.last.delay!=null?x.last.delay+600:0;
+    if(calm())return;
+    if(x.at>0){x.seat.classList.add("mkw");setTimeout(()=>x.seat.classList.remove("mkw"),x.at)} // tile colour waits for the card
+    const r="translate(-50%,-50%) rotate(-10deg)";
+    x.el.animate([{transform:`${r} scale(2.4)`,opacity:0},{transform:`${r} scale(.92)`,opacity:1,offset:.6},{transform:`${r} scale(1)`,opacity:1}],{duration:420,delay:x.at,easing:"cubic-bezier(.2,.8,.2,1)",fill:"backwards"});
+    if(x.mk==="bust")x.seat.animate([{translate:"0 0"},{translate:"-6px 0"},{translate:"6px 0"},{translate:"-4px 0"},{translate:"3px 0"},{translate:"0 0"}],{duration:380,delay:x.at+260});
+  });
+  const cos=stamps.filter(s=>s.mk==="bj"||s.p.id===S.me); // a bust is announced only to the player who busted; others see the stamp
+  if(cos.length){const x=cos.find(s=>s.p.id===S.me)||cos[cos.length-1];showCallout(x.p,x.mk,x.at+(calm()?0:250))}
   // chips: a bust slides to the dealer pool once the busting card has landed
   const pool=$("#pool"),dealt=Math.max(0,deckUntil-Date.now());
   if(busts.length){
@@ -1007,10 +1145,11 @@ function renderTable(){
     setTimeout(()=>sweepChips(r),sweepT);
   }
   prevPhase=S.phase;
-  ps.forEach(p=>{prevP[p.id]={round:S.round,phase:S.phase,status:p.status,chips:p.chips}});
+  ps.forEach(p=>{prevP[p.id]={round:S.round,phase:S.phase,status:p.status,chips:p.chips,mark:markOf(p)}});
   const c=$("#center");
   if(S.phase==="lobby")c.innerHTML=S.solo?`Your private table<small>Press Start game when you’re ready</small>`:`Waiting for players<small>The host starts when everyone has joined</small>`;
   else if(S.phase==="betting"){const outs=S.players.filter(isOut);c.innerHTML=`Place your bets<small>${esc(nameOf(S.dealer))} is dealing${outs.length===1?` · ${esc(outs[0].name)} is out of chips and sits this one out`:outs.length?` · ${outs.length} players are out of chips`:""}</small>`}
+  else if(S.phase==="playing"&&!S.turn)c.innerHTML=`Dealing<small>Everyone gets one card face down</small>`;
   else if(S.phase==="playing")c.innerHTML=S.turn===S.me?`Your turn`:`${esc(nameOf(S.turn))}’s turn<small>${S.turn===S.dealer?"Dealer plays last":"Cards flip as each turn starts"}</small>`;
   else c.innerHTML=`Round over<small>${esc(nameOf(S.next))} moves into the dealer chair next</small>`;
 }
@@ -1064,11 +1203,12 @@ function renderDock(){
   const d=$("#dock");if(!d)return;
   const me=P(S.me)||{},amD=S.dealer===S.me;let h="",cls="";
   if(S.phase==="playing"&&S.turn===S.me){
-    const v=val(me.hand),dl=P(S.dealer),up=!amD&&dl&&dl.hand[0]?dl.hand[0]:null;
-    h=`<div class="dh"><div class="dv">${v}</div><div><div class="kicker">YOUR TURN</div>
+    // during a hold (your bust/21/stand is being shown) the buttons stay, disabled, so the layout doesn't jump
+    const v=val(me.hand),dl=P(S.dealer),up=!amD&&dl&&dl.hand[0]?dl.hand[0]:null,hd=!!S.hold;
+    h=`<div class="dh"><div class="dv">${v}</div><div><div class="kicker">${hd?(v>21?"BUST":v===21?"21":"YOU STAND"):"YOUR TURN"}</div>
       <div class="sub" style="margin:0">${amD?"Dealer hand · you must hit until 17":`vs dealer <b style="color:var(--fg)">${up?val([up]):"?"}</b>${up?"":" (face down)"} · bet ${me.bet}`}</div></div></div>
-      <div class="acts"><button class="act hit" id="hit">HIT<span>Take a card · H</span></button>
-      <button class="act stand" id="stand" ${amD&&v<17?"disabled":""}>STAND<span>Keep ${v} · S</span></button></div>`;
+      <div class="acts"><button class="act hit" id="hit" ${hd?"disabled":""}>HIT<span>Take a card · H</span></button>
+      <button class="act stand" id="stand" ${hd||(amD&&v<17)?"disabled":""}>STAND<span>Keep ${v} · S</span></button></div>`;
   }else if(gameOver()){
     const w=P(S.winner),host=S.host===S.me;
     cls="over";
@@ -1120,7 +1260,9 @@ function listHTML(){
     if(S.phase==="results"&&p.res&&!isD){bet=p.res.dl?sign(p.res.dl):"0";bc=resCls(p.res)}
     else if(S.phase==="results"&&p.res&&isD){bet=sign(p.res.dl);bc=p.res.dl>0?"win":p.res.dl<0?"lose":""}
     else if((S.phase==="betting"||p.in)&&p.bet&&!isD)bet=p.bet;
-    return`<div class="li ${p.id===S.me?"me":""}" style="${p.online&&!isOut(p)?"":"opacity:.5"}"><div class="av ${isD?"d":""}">${esc(p.name[0]||"?")}</div>
+    const mk=isD?"":markOf(p);
+    const av=mk==="bust"?`<div class="av x" aria-hidden="true">${XI(14)}</div>`:mk==="bj"?`<div class="av s" aria-hidden="true">${STAR(14)}</div>`:`<div class="av ${isD?"d":""}">${esc(p.name[0]||"?")}</div>`;
+    return`<div class="li ${p.id===S.me?"me":""} ${mk}" style="${p.online&&!isOut(p)?"":"opacity:.5"}">${av}
     <div class="n">${esc(p.name)}${p.id===S.me?" (you)":""}${p.bot?`<span class="cpu">CPU</span>`:""}${st.t?`<small class="${st.c}">${esc(st.t)}</small>`:""}</div>${tag}<span class="b ${bc}">${bet}</span><span class="c">${dispChips(p)}</span></div>`}).join("");
 }
 // bankrupt round: show how the bank was shared (same rule as the server's Table.share)
@@ -1163,12 +1305,12 @@ function renderConsole(){
     <div class="chips">${CH.map(v=>`<button class="chip c${v}" data-bet="${v}" aria-label="Add ${v}" ${v>left?"disabled":""}>${v}</button>`).join("")}</div>
     <button class="btn allin w" id="allin" ${allin?"disabled":""}>ALL IN · ${me.chips}</button>
     <div class="row2"><button class="btn ghost" id="clear" ${me.bet?"":"disabled"}>Clear</button><button class="btn gold" id="ready" ${me.bet?"":"disabled"}>Lock bet${me.bet?" · "+me.bet:""}</button></div>`}`;
-  }else if(S.phase==="playing"&&S.turn===S.me){
+  }else if(S.phase==="playing"&&S.turn===S.me&&!S.hold){
     main=`<div class="status hot"><div class="kicker">ROUND ${S.round} · YOUR TURN</div><div class="big1">Hit or Stand on the table</div>
     <div class="sub">Keys: H to hit · S to stand</div></div>${amD?"":stats("Bet this round",me.bet)}`;
   }else if(S.phase==="playing"){
     const note=!me.in?"You’re sitting out this round.":!me.revealed&&!amD?"Your card is face down until your turn.":me.status==="bust"?"You busted this round.":amD?"You play last.":"Your turn is done.";
-    main=`<div class="status"><div class="kicker">ROUND ${S.round} · PLAYING</div><div class="big1">${esc(nameOf(S.turn))}’s turn</div><div class="sub">${note}</div></div>
+    main=`<div class="status"><div class="kicker">ROUND ${S.round} · PLAYING</div><div class="big1">${S.turn?`${esc(nameOf(S.turn))}’s turn`:"Dealing…"}</div><div class="sub">${note}</div></div>
     ${me.in&&!amD?stats("Bet this round",me.bet):""}`;
   }else if(gameOver()){
     const w=P(S.winner),rank=[...S.players].sort((a,b)=>(b.id===S.winner)-(a.id===S.winner)||(b.outRound??1e9)-(a.outRound??1e9)||b.chips-a.chips).findIndex(p=>p.id===S.me)+1;

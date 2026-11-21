@@ -7,6 +7,9 @@ const CH = [1, 5, 10, 25, 50];
 const val = h => { let t = 0, a = 0; for (const c of h) { const r = c.slice(0, -1); if (r === "A") { a++; t += 11 } else if ("JQK".includes(r)) t += 10; else t += +r } while (t > 21 && a) { t -= 10; a-- } return t };
 const BOT_NAMES = ["Ava", "Milo", "Zara", "Leo", "Nina", "Oscar", "Ruby", "Theo", "Iris"];
 const wait = (lo, hi) => lo + Math.random() * (hi - lo);
+// pacing (ms): how long the table holds still. HOLD_MARK covers the card landing plus the
+// Bust/Blackjack call-out on screen (the client shows it until the hold ends).
+const HOLD_MARK = 3500, HOLD_STEP = 1000, HOLD_DEAL = 900, HOLD_PER_CARD = 260;
 const mkDeck = () => { const d = []; for (const s of "♠♥♦♣") for (const r of ["A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"]) d.push(r + s); for (let i = d.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0;[d[i], d[j]] = [d[j], d[i]] } return d };
 
 export default {
@@ -76,16 +79,16 @@ export class Table {
       case "reset": if (pid === S.host) {
         S.players = S.players.filter(x => x.online);
         S.players.forEach(x => Object.assign(x, { chips: S.start, bet: 0, ready: false, in: false, hand: [], revealed: false, status: "", res: null, outRound: null }));
-        clearTimeout(this.botT); this.botT = null;
-        Object.assign(S, { phase: "lobby", dealer: null, turn: null, seq: [], round: 0, msg: "", showFirst: false, winner: null, share: null });
+        clearTimeout(this.botT); this.botT = null; clearTimeout(this.holdT); this.holdT = null;
+        Object.assign(S, { hold: false, phase: "lobby", dealer: null, turn: null, seq: [], round: 0, msg: "", showFirst: false, winner: null, share: null });
       } break;
       case "dshow": if (S.phase === "betting" && pid === S.dealer) S.showFirst = !!m.show; break;
       case "bet": if (betting && CH.includes(m.amount) && p.bet + m.amount <= p.chips) p.bet += m.amount; break;
       case "allin": if (betting && p.chips >= 1) p.bet = p.chips; break;
       case "clear": if (betting) p.bet = 0; break;
       case "ready": if (betting && p.bet >= 1) { p.ready = true; this.maybeDeal() } break;
-      case "hit": if (S.phase === "playing" && S.turn === pid) this.hit(p); break;
-      case "stand": if (S.phase === "playing" && S.turn === pid) this.stand(p); break;
+      case "hit": if (S.phase === "playing" && S.turn === pid && !S.hold) this.hit(p); break;
+      case "stand": if (S.phase === "playing" && S.turn === pid && !S.hold) this.stand(p); break;
     }
     this.broadcast();
   }
@@ -100,7 +103,7 @@ export class Table {
     if (S.phase === "lobby") S.players = S.players.filter(x => x !== p);
     if (S.host === pid) { const h = this.online()[0]; if (h) S.host = h.id }
     if (S.phase === "betting") this.maybeDeal();
-    else if (S.phase === "playing" && S.turn === pid) { this.auto(p); this.advance() }
+    else if (S.phase === "playing" && S.turn === pid && !S.hold) { this.auto(p); this.pause(HOLD_STEP, () => this.advance()) }
     this.broadcast();
   }
 
@@ -111,7 +114,7 @@ export class Table {
     return null;
   }
   newRound() {
-    const S = this.s; S.round++; S.phase = "betting"; S.msg = ""; S.showFirst = false; S.share = null;
+    const S = this.s; S.round++; S.phase = "betting"; S.msg = ""; S.hold = false; clearTimeout(this.holdT); this.holdT = null; S.showFirst = false; S.share = null;
     S.dealer = S.dealer == null ? this.online()[0].id : this.nextDealer();
     if (this.P(S.dealer).bot) S.showFirst = Math.random() < .5;
     S.players.forEach(p => Object.assign(p, { bet: 0, ready: p.id === S.dealer, in: false, hand: [], revealed: false, status: "", res: null }));
@@ -129,27 +132,44 @@ export class Table {
     const di = ps.indexOf(d); S.seq = [];
     for (let k = 1; k <= ps.length; k++) { const p = ps[(di + k) % ps.length]; if (p === d || bettors.includes(p)) S.seq.push(p.id) } // clockwise, dealer last
     S.seq.forEach(id => { const p = this.P(id); p.in = true; p.hand = [this.draw()]; p.revealed = false; p.status = "wait" });
-    S.idx = -1; this.advance();
+    S.idx = -1; S.turn = null;
+    this.pause(HOLD_DEAL + HOLD_PER_CARD * S.seq.length, () => this.advance()); // let the face-down cards land first
   }
   // a player's turn begins: their face-down card flips and a second card is dealt face up
   startTurn(p) { p.revealed = true; p.hand.push(this.draw()); p.status = val(p.hand) === 21 ? "bj" : "play" }
   auto(p) { if (!p.revealed) this.startTurn(p); while (val(p.hand) < 17) p.hand.push(this.draw()); p.status = val(p.hand) > 21 ? "bust" : (p.status === "bj" ? "bj" : "stand") }
+  // Hold the table still for a moment so everyone sees what just happened (a bust, a 21, a stand)
+  // before the game moves on. Nobody can act during a hold; the computer players wait too.
+  pause(ms, then) {
+    const S = this.s, r = S.round;
+    S.hold = true; clearTimeout(this.holdT);
+    this.holdT = setTimeout(() => {
+      this.holdT = null;
+      if (!S.hold || S.round !== r || S.phase !== "playing") return;
+      S.hold = false;
+      try { then() } catch (e) { console.log(String(e)) }
+      this.broadcast();
+    }, ms);
+  }
   advance() {
     const S = this.s;
-    for (; ;) {
-      S.idx++;
-      if (S.idx >= S.seq.length) return this.settle();
-      const p = this.P(S.seq[S.idx]);
-      if (p.id === S.dealer && !S.seq.some(id => id !== S.dealer && this.P(id).status === "stand")) return this.settle(); // nobody left to beat
-      this.startTurn(p);
-      if (p.status !== "play") continue;          // blackjack: turn ends at once
-      S.turn = p.id;
-      if (p.online) return;
-      this.auto(p);                                 // disconnected player: plays by house rules
-    }
+    S.idx++;
+    if (S.idx >= S.seq.length) return this.settle();
+    const p = this.P(S.seq[S.idx]);
+    if (p.id === S.dealer && !S.seq.some(id => id !== S.dealer && this.P(id).status === "stand")) return this.settle(); // nobody left to beat
+    this.startTurn(p);
+    S.turn = p.id;
+    if (p.status !== "play") return this.pause(HOLD_MARK, () => this.advance()); // blackjack: shown, then the turn ends
+    if (p.online) return;
+    this.auto(p);                                   // disconnected player: plays by house rules
+    this.pause(val(p.hand) >= 21 ? HOLD_MARK : HOLD_STEP, () => this.advance());
   }
-  hit(p) { p.hand.push(this.draw()); const v = val(p.hand); if (v > 21) { p.status = "bust"; this.advance() } else if (v === 21) { p.status = "stand"; this.advance() } }
-  stand(p) { if (p.id === this.s.dealer && val(p.hand) < 17) return; p.status = "stand"; this.advance() }
+  hit(p) {
+    p.hand.push(this.draw()); const v = val(p.hand);
+    if (v > 21) { p.status = "bust"; this.pause(HOLD_MARK, () => this.advance()) }
+    else if (v === 21) { p.status = "stand"; this.pause(HOLD_MARK, () => this.advance()) }
+  }
+  stand(p) { if (p.id === this.s.dealer && val(p.hand) < 17) return; p.status = "stand"; this.pause(HOLD_STEP, () => this.advance()) }
   settle() {
     const S = this.s, d = this.P(S.dealer);
     S.phase = "results"; S.turn = null;
@@ -216,7 +236,7 @@ export class Table {
   view(me) {
     const S = this.s;
     return {
-      t: "state", me, solo: !!S.solo, phase: S.phase, host: S.host, start: S.start, round: S.round, dealer: S.dealer, showFirst: S.showFirst,
+      t: "state", me, solo: !!S.solo, phase: S.phase, hold: !!S.hold, host: S.host, start: S.start, round: S.round, dealer: S.dealer, showFirst: S.showFirst,
       next: S.phase === "lobby" ? null : this.nextDealer(), turn: S.turn, msg: S.msg, deck: this.deck.length || 52,
       winner: S.winner || null, share: S.share || null,
       players: S.players.map(p => {
@@ -236,10 +256,10 @@ export class Table {
     let ms = 0, act = null;
     if (S.phase === "betting") {
       const b = S.players.find(p => p.bot && p.id !== S.dealer && p.chips >= 1 && !p.ready);
-      if (b) { ms = wait(450, 950); act = () => { this.botBet(b); this.maybeDeal() } }
-    } else if (S.phase === "playing") {
+      if (b) { ms = wait(900, 1600); act = () => { this.botBet(b); this.maybeDeal() } }
+    } else if (S.phase === "playing" && !S.hold) {
       const p = this.P(S.turn);
-      if (p && p.bot) { const t = S.turn, c = p.hand.length; ms = p.hand.length === 2 ? wait(1100, 1500) : wait(750, 1100); act = () => { if (S.turn === t && p.hand.length === c) this.botPlay(p) } }
+      if (p && p.bot) { const t = S.turn, c = p.hand.length; ms = p.hand.length === 2 ? wait(1800, 2400) : wait(1300, 1800); act = () => { if (S.turn === t && p.hand.length === c && !S.hold) this.botPlay(p) } }
     } else if (S.phase === "results" && !S.winner) {
       const me = S.players.find(p => !p.bot);
       if (me && me.chips < 1) { const r = S.round; ms = 6000; act = () => { if (S.phase === "results" && S.round === r) this.newRound() } } // you're out: the computers play on
