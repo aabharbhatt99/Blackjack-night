@@ -45,7 +45,7 @@ export class Table {
       S.start = Math.min(100000, Math.max(10, parseInt(m.start) || 500)); S.host = id;
     } else if (m.create && !p) return fail("That code is taken, try again.");
     if (!p) {
-      if (S.players.length >= 8) return fail("Lobby is full (8 players).");
+      if (S.players.length >= 10) return fail("Lobby is full (10 players)."); // the table layout is measured to fit 10
       p = { id, name, chips: S.start, online: true, bet: 0, ready: false, in: false, hand: [], revealed: false, status: "", res: null };
       S.players.push(p);
     }

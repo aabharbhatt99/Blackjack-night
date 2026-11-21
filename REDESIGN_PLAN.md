@@ -1,6 +1,6 @@
 # Table redesign plan
 
-Status: **all 5 steps implemented (2026-11-21), ready for local testing.**
+Status: **all 6 steps implemented (2026-11-21), ready for local testing.**
 
 Mockup: https://claude.ai/artifact/6d3HDJv3N4KGpJhn5Sqjkq (3 screens: Betting, Your turn, Round over)
 
@@ -140,3 +140,22 @@ bankrupt. The whole bank is paid out and the dealer ends on 0.
     the round they went out, the last one out ranked highest. The server records each
     player's `outRound` for this.
 
+
+## Step 6: Up to 10 players  `[x]`
+
+Option 1 from the canvas ("seats continue up the sides").
+- The lobby cap goes from 8 to 10 (`src/worker.js`).
+- Seats are spaced evenly by distance along the table's curve. With many players the curve continues
+  past the widest point, up the sides beside the dealer.
+- Seat size:
+  - 2–5 players: full-size seats, spread over up to 925px of curve.
+  - 6–10 players: compact seats (46×66 cards, 100px name plates, 56px chip rings), spread over up to
+    1450px of curve. The dealer always keeps full size.
+  - In compact seats, tags such as NEXT DEALER sit on the plate's bottom edge instead of adding a line.
+- The deck moves to the dealer's left, with its card count above it. The dealer pool is slightly
+  narrower and moved right.
+- Long hands overlap more from the 4th card on, so they stay narrow.
+- The results box is shorter: it no longer has a separate "deals next" line, and the Deal button now
+  says who deals next. It also sits higher, just under the dealer's cards.
+- Measured in real games for 2–10 players, run twice, on both the your-turn and results screens: the
+  smallest gap anywhere is 4px (seats, chips, deck, pool, Hit/Stand box), and an 11th player is refused.

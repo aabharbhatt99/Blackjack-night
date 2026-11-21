@@ -5,6 +5,8 @@ Deploy (free Cloudflare account):
 2. npx wrangler login
 3. npx wrangler deploy   -> prints https://blackjack-night.<you>.workers.dev
 
+Up to 10 people can join a lobby (the dealer plus 9 players).
+
 Test alone on your computer:
   npx wrangler dev  -> open http://localhost:8787 in a normal window, an Incognito window
   and another browser; each one is a separate player.
