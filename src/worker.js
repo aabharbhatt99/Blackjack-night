@@ -2,6 +2,7 @@
 // Flow: betting -> every player gets ONE face-down card -> on each turn (clockwise from
 // the dealer's left) that card flips for everyone, a second card is dealt face up, then
 // hit/stand. Dealer plays last. The dealer chooses whether their first card is face up.
+// Balances only change in settle(): bets stay on the table (client-side) until the round ends.
 const CH = [1, 5, 10, 25, 50];
 const val = h => { let t = 0, a = 0; for (const c of h) { const r = c.slice(0, -1); if (r === "A") { a++; t += 11 } else if ("JQK".includes(r)) t += 10; else t += +r } while (t > 21 && a) { t -= 10; a-- } return t };
 const mkDeck = () => { const d = []; for (const s of "♠♥♦♣") for (const r of ["A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"]) d.push(r + s); for (let i = d.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0;[d[i], d[j]] = [d[j], d[i]] } return d };
@@ -63,14 +64,15 @@ export class Table {
     const betting = S.phase === "betting" && !p.ready && pid !== S.dealer;
     switch (m.t) {
       case "start": if (S.phase === "lobby" && pid === S.host && this.online().length >= 2) this.newRound(); break;
-      case "next": if (S.phase === "results" && this.online().length >= 2) this.newRound(); break;
+      case "next": if (S.phase === "results" && !S.winner && this.online().length >= 2) this.newRound(); break;
       case "reset": if (pid === S.host) {
         S.players = S.players.filter(x => x.online);
-        S.players.forEach(x => Object.assign(x, { chips: S.start, bet: 0, ready: false, in: false, hand: [], revealed: false, status: "", res: null }));
-        Object.assign(S, { phase: "lobby", dealer: null, turn: null, seq: [], round: 0, msg: "", showFirst: false });
+        S.players.forEach(x => Object.assign(x, { chips: S.start, bet: 0, ready: false, in: false, hand: [], revealed: false, status: "", res: null, outRound: null }));
+        Object.assign(S, { phase: "lobby", dealer: null, turn: null, seq: [], round: 0, msg: "", showFirst: false, winner: null, share: null });
       } break;
       case "dshow": if (S.phase === "betting" && pid === S.dealer) S.showFirst = !!m.show; break;
       case "bet": if (betting && CH.includes(m.amount) && p.bet + m.amount <= p.chips) p.bet += m.amount; break;
+      case "allin": if (betting && p.chips >= 1) p.bet = p.chips; break;
       case "clear": if (betting) p.bet = 0; break;
       case "ready": if (betting && p.bet >= 1) { p.ready = true; this.maybeDeal() } break;
       case "hit": if (S.phase === "playing" && S.turn === pid) this.hit(p); break;
@@ -92,13 +94,14 @@ export class Table {
     this.broadcast();
   }
 
+  // the dealer chair skips anyone who is offline or knocked out (0 chips)
   nextDealer() {
     const ps = this.s.players, cur = ps.findIndex(p => p.id === this.s.dealer);
-    for (let k = 1; k <= ps.length; k++) { const p = ps[(cur + k + ps.length) % ps.length]; if (p.online) return p.id }
+    for (let k = 1; k <= ps.length; k++) { const p = ps[(cur + k + ps.length) % ps.length]; if (p.online && p.chips >= 1) return p.id }
     return null;
   }
   newRound() {
-    const S = this.s; S.round++; S.phase = "betting"; S.msg = ""; S.showFirst = false;
+    const S = this.s; S.round++; S.phase = "betting"; S.msg = ""; S.showFirst = false; S.share = null;
     S.dealer = S.dealer == null ? this.online()[0].id : this.nextDealer();
     S.players.forEach(p => Object.assign(p, { bet: 0, ready: p.id === S.dealer, in: false, hand: [], revealed: false, status: "", res: null }));
     S.seq = []; S.turn = null; this.maybeDeal();
@@ -141,9 +144,11 @@ export class Table {
     S.phase = "results"; S.turn = null;
     S.players.forEach(p => { if (p.in) p.revealed = true });
     if (d.hand.length < 2) { d.hand.push(this.draw()); if (val(d.hand) === 21) d.status = "bj" }
-    const dv = val(d.hand), dbj = d.status === "bj"; let sum = 0;
-    for (const p of S.players) {
-      if (!p.in || p === d) continue;
+    const dv = val(d.hand), dbj = d.status === "bj";
+    // seq is clockwise from the dealer's left: that order breaks odd-chip ties
+    const order = S.seq.map(id => this.P(id)).filter(p => p !== d), winners = [];
+    let lost = 0;
+    for (const p of order) {
       const pv = val(p.hand), bj = p.status === "bj"; let o, dl;
       if (pv > 21) { o = "Bust"; dl = -p.bet }
       else if (bj && !dbj) { o = "Blackjack!"; dl = Math.floor(p.bet * 1.5) }
@@ -152,9 +157,49 @@ export class Table {
       else if (dv > 21 || pv > dv) { o = "Win"; dl = p.bet }
       else if (pv < dv) { o = "Lose"; dl = -p.bet }
       else { o = "Push"; dl = 0 }
-      p.chips += dl; sum += dl; p.res = { o, dl };
+      p.res = { o, dl };
+      if (dl < 0) { p.chips += dl; lost -= dl }
+      else if (dl > 0) winners.push({ id: p.id, owed: dl, rank: bj ? 22 : pv }); // blackjack ranks above a plain 21
     }
-    d.chips -= sum; d.res = { o: "Dealer", dl: -sum };
+    // the dealer pays from their chips plus every losing bet; if that can't cover the winners, it's shared out
+    const bank = d.chips + lost, owed = winners.reduce((a, w) => a + w.owed, 0);
+    const broke = owed > bank, paid = broke ? Table.share(bank, winners) : new Map(winners.map(w => [w.id, w.owed]));
+    let out = 0;
+    for (const w of winners) { const p = this.P(w.id), x = paid.get(w.id); p.chips += x; out += x; p.res.dl = x; if (x < w.owed) p.res.owed = w.owed }
+    const dealerBefore = d.chips;
+    d.chips = bank - out; d.res = { o: broke ? "Bankrupt" : "Dealer", dl: d.chips - dealerBefore, bankrupt: broke };
+    S.share = broke ? { bank, dealerChips: dealerBefore, lost, owed, rows: winners.map(w => ({ id: w.id, rank: w.rank, owed: w.owed, paid: paid.get(w.id) })) } : null;
+    // anyone on 0 chips is knocked out; with fewer than 2 players holding chips the game is over
+    for (const p of S.players) if (p.chips < 1 && p.outRound == null) p.outRound = S.round;
+    const alive = S.players.filter(p => p.chips >= 1);
+    S.winner = alive.length < 2 ? (alive[0] || {}).id || null : null;
+  }
+  // Bankrupt dealer: split `bank` among `ws` ([{id, owed, rank}], clockwise order). Nobody gets more than owed.
+  //  1. guarantee: half the bank split equally (at least 1 each), the remainder joins the priority pool
+  //  2. priority: best hand first (rank desc); a tie splits its money equally, a capped player's spare
+  //     goes to the rest of the tie, and odd chips go one each clockwise
+  //  3. a bank smaller than the number of winners pays 1 chip each in priority order
+  static share(bank, ws) {
+    const pay = new Map(ws.map(w => [w.id, 0])), need = w => w.owed - pay.get(w.id);
+    const tiers = [...new Set(ws.map(w => w.rank))].sort((a, b) => b - a).map(r => ws.filter(w => w.rank === r));
+    if (bank < ws.length) {
+      let left = bank;
+      for (const t of tiers) for (const w of t) if (left > 0) { pay.set(w.id, 1); left-- }
+      return pay;
+    }
+    let left = bank;
+    const each = Math.max(1, Math.floor(Math.floor(bank / 2) / ws.length));
+    for (const w of ws) { const x = Math.min(each, w.owed); pay.set(w.id, x); left -= x }
+    for (const t of tiers) {
+      let g = t.filter(w => need(w) > 0);
+      while (left > 0 && g.length) {
+        const e = Math.floor(left / g.length);
+        if (e === 0) { for (const w of g) if (left > 0) { pay.set(w.id, pay.get(w.id) + 1); left-- } }
+        else for (const w of g) { const x = Math.min(e, need(w)); pay.set(w.id, pay.get(w.id) + x); left -= x }
+        g = g.filter(w => need(w) > 0);
+      }
+    }
+    return pay;
   }
 
   view(me) {
@@ -162,10 +207,11 @@ export class Table {
     return {
       t: "state", me, phase: S.phase, host: S.host, start: S.start, round: S.round, dealer: S.dealer, showFirst: S.showFirst,
       next: S.phase === "lobby" ? null : this.nextDealer(), turn: S.turn, msg: S.msg, deck: this.deck.length || 52,
+      winner: S.winner || null, share: S.share || null,
       players: S.players.map(p => {
         let hand = p.hand;
         if (!p.revealed) hand = p.id === S.dealer && S.showFirst ? p.hand.slice() : p.hand.map(() => null); // nobody peeks, not even the owner
-        return { id: p.id, name: p.name, chips: p.chips, online: p.online, bet: p.bet, ready: p.ready, in: p.in, revealed: p.revealed, status: p.status, res: p.res, hand };
+        return { id: p.id, name: p.name, chips: p.chips, online: p.online, bet: p.bet, ready: p.ready, in: p.in, revealed: p.revealed, status: p.status, res: p.res, outRound: p.outRound ?? null, hand };
       })
     };
   }

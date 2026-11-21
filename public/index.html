@@ -49,11 +49,13 @@ input:focus{outline:2px solid var(--gold);outline-offset:1px}
 .seat{position:absolute;width:190px;display:flex;flex-direction:column;align-items:center;gap:8px;transform:translate(-50%,-50%);transition:left .9s cubic-bezier(.65,0,.35,1),top .9s cubic-bezier(.65,0,.35,1);z-index:2}
 .seat.dealerseat{width:240px;flex-direction:column-reverse}
 .seat.off{opacity:.45}
-.plate{background:rgba(10,16,13,.92);border:1px solid var(--line2);border-radius:14px;padding:8px 16px;text-align:center;min-width:140px;transition:border-color .3s,box-shadow .3s}
-.plate.mine{background:var(--goldbg);border-color:var(--gold)}
+.plate{position:relative;background:rgba(10,16,13,.92);border:1px solid var(--line2);border-radius:14px;padding:8px 16px;text-align:center;min-width:140px;transition:border-color .3s,box-shadow .3s}
+.plate.mine{background:var(--goldbg);border:2px solid var(--gold);box-shadow:0 0 22px rgba(227,184,79,.4);padding-top:12px}
+.plate.mine .pn{color:var(--gold2)}
 .plate.turn{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold),0 0 26px rgba(227,184,79,.5)}
+.plate.mine.turn{box-shadow:0 0 0 3px rgba(227,184,79,.35),0 0 30px rgba(227,184,79,.6)}
+.me-badge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--gold);color:#2a1e00;font:700 11px Inter,sans-serif;letter-spacing:.14em;padding:2px 10px;border-radius:99px;box-shadow:0 0 12px rgba(227,184,79,.7);white-space:nowrap}
 .pn{font-weight:600;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
-.pn i{font-style:normal;font-size:11px;letter-spacing:.1em;color:var(--gold);margin-left:4px}
 .ps{font-size:14px;color:var(--muted);font-weight:600}
 .pc{font-size:13px;color:var(--muted)}
 .tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.08em;background:var(--gold);color:#2a1e00;padding:2px 8px;border-radius:99px;margin-bottom:3px}
@@ -81,8 +83,67 @@ input:focus{outline:2px solid var(--gold);outline-offset:1px}
 .card.ghost+.card.ghost{margin-left:10px}
 .tot{position:absolute;right:-14px;top:-12px;background:#0b1210;border:1px solid var(--gold);color:var(--gold2);font:700 14px 'Space Grotesk',sans-serif;border-radius:99px;padding:2px 8px;z-index:3}
 
+/* ---------- bets on the felt ---------- */
+.spot{position:absolute;left:50%;top:50%;width:72px;height:72px;margin:-36px 0 0 -36px;border-radius:50%;border:2px dashed rgba(255,255,255,.28);display:flex;align-items:flex-end;justify-content:center;gap:3px;padding-bottom:16px;box-sizing:border-box;pointer-events:none;transition:left .9s cubic-bezier(.65,0,.35,1),top .9s cubic-bezier(.65,0,.35,1),border-color .3s,box-shadow .3s}
+.spot.none{display:none}
+.spot.mine{border-color:rgba(227,184,79,.7)}
+.spot.allin{border-color:var(--gold);box-shadow:0 0 18px rgba(227,184,79,.45)}
+.spot.won{border-color:var(--green);box-shadow:0 0 18px rgba(143,224,173,.35)}
+.piles{display:flex;gap:3px;align-items:flex-end}
+.pile{display:flex;flex-direction:column-reverse;align-items:center}
+.ck{width:30px;height:11px;border-radius:50%;border:2px dashed rgba(255,255,255,.8);box-shadow:0 2px 0 rgba(0,0,0,.45);box-sizing:border-box;flex:none}
+.ck+.ck{margin-bottom:-6px}
+.k1{background:#eceff1;border-color:#9aa4ad}.k5{background:#d23b3b}.k10{background:#2f6fe0}.k25{background:#1f9a55}.k50{background:#1b1b1b;border-color:var(--gold)}
+.amt{position:absolute;bottom:-11px;left:50%;transform:translateX(-50%);white-space:nowrap;font:700 12px 'Space Grotesk',sans-serif;background:rgba(8,14,11,.94);border:1px solid #3a5045;color:var(--fg);border-radius:99px;padding:2px 9px}
+.amt.gold{border-color:var(--gold);color:var(--gold2)}.amt.red{border-color:var(--red);color:var(--red)}.amt.green{border-color:var(--green);color:var(--green)}
+.pool{position:absolute;left:632px;top:102px;width:176px;height:100px;border-radius:16px;border:2px dashed rgba(227,184,79,.45);background:rgba(0,0,0,.2);display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:8px 6px 10px;box-sizing:border-box;z-index:1;text-align:center;pointer-events:none}
+.pool .kicker{font-size:11px}
+.pool .pv{font:700 13px 'Space Grotesk',sans-serif;color:var(--gold2)}
+.pool .pv span{font:500 12px Inter,sans-serif;color:var(--muted)}
+.pool .pe{font-size:12px;color:rgba(255,255,255,.6);margin:auto 0}
+.flychips{position:absolute;left:0;top:0;z-index:30;pointer-events:none;filter:drop-shadow(0 10px 10px rgba(0,0,0,.45))}
+.spot.part{border-color:var(--gold);box-shadow:0 0 18px rgba(227,184,79,.35)}
+.pool.broke{border-color:rgba(255,157,143,.6);background:rgba(0,0,0,.25)}
+.pool.broke .kicker{color:var(--red)}
+
+/* ---------- knocked out / bankrupt / game over ---------- */
+.seat.out{opacity:.45;filter:grayscale(1)}
+.seat.out.me{opacity:.7;filter:grayscale(.6)}
+.tag.out{background:transparent;border:1px solid var(--muted);color:var(--muted)}
+.tag.red{background:var(--red);color:#2a0a05}
+.tag.champ{background:var(--gold);color:#2a1e00}
+.plate.broke{border-color:var(--red);box-shadow:0 0 22px rgba(255,157,143,.3)}
+.plate.champ{border:2px solid var(--gold);box-shadow:0 0 0 3px rgba(227,184,79,.3),0 0 34px rgba(227,184,79,.6)}
+.banner{display:flex;align-items:center;gap:10px;background:rgba(255,157,143,.1);border:1px solid rgba(255,157,143,.5);border-radius:12px;padding:8px 12px;font-size:13px;color:#ffc2b8}
+.banner b{color:var(--red)}
+.dock.over{text-align:center;align-items:center;border-color:var(--gold);box-shadow:0 18px 40px rgba(0,0,0,.5),0 0 40px rgba(227,184,79,.25)}
+.dock .dtitle{font:700 30px/1.1 'Space Grotesk',sans-serif}
+.status.broke{border-color:rgba(255,157,143,.5)}.status.broke .kicker{color:var(--red)}
+.bkt{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.bkt .how{font-size:12px;color:var(--muted);margin:4px 0 8px}
+.bkt .how b{color:var(--fg)}
+.bkr{display:grid;grid-template-columns:1fr 44px 44px 56px;gap:6px;align-items:center;font-size:13px;padding:5px 0;border-top:1px solid var(--line)}
+.bkr.h{border-top:0;font-size:11px;letter-spacing:.08em;color:var(--muted);font-weight:700;padding-top:0}
+.bkr span:not(:first-child){text-align:right}
+.bkr b{font:700 13px 'Space Grotesk',sans-serif}
+.bkr.me{color:var(--gold2)}
+.li .rk{width:28px;height:28px;border-radius:50%;background:#2c3d34;display:flex;align-items:center;justify-content:center;font:700 13px 'Space Grotesk',sans-serif;flex:none}
+.li.champ{border-color:var(--gold);background:linear-gradient(135deg,#2a2108,#1a1406)}
+.li.champ .rk{background:var(--gold);color:#2a1e00}
+
+/* ---------- action dock (on the table) ---------- */
+.dock{position:absolute;left:50%;top:0;width:400px;box-sizing:border-box;padding:14px 18px 16px;border-radius:20px;background:rgba(8,14,11,.92);border:1px solid var(--gold);box-shadow:0 18px 40px rgba(0,0,0,.5),0 0 30px rgba(227,184,79,.18);display:flex;flex-direction:column;gap:12px;z-index:8;transform-origin:top center}
+.dock[hidden]{display:none}
+.dock.good{border-color:var(--green);box-shadow:0 18px 40px rgba(0,0,0,.5)}
+.dock.bad{border-color:var(--red);box-shadow:0 18px 40px rgba(0,0,0,.5)}
+.dock .dh{display:flex;align-items:center;gap:4px 14px;flex-wrap:wrap}
+.dock .dv{font:700 46px/1 'Space Grotesk',sans-serif}
+.dock .dres{font:700 28px/1.1 'Space Grotesk',sans-serif;white-space:nowrap}
+.dock .banner{padding:6px 10px}
+.dock .act{height:64px;font-size:22px;border-radius:16px}
+
 /* ---------- console ---------- */
-aside{flex:0 0 400px;background:var(--panel);border-left:1px solid var(--line);display:flex;flex-direction:column;padding:20px;gap:14px;min-height:0}
+aside{flex:0 0 320px;background:var(--panel);border-left:1px solid var(--line);display:flex;flex-direction:column;padding:20px;gap:14px;min-height:0}
 .chead{display:flex;justify-content:space-between;align-items:center}
 .chead .t{font:700 20px 'Space Grotesk',sans-serif}
 .code{display:flex;align-items:center;gap:8px;background:var(--panel2);border:1px solid var(--line2);color:var(--gold);font:700 15px 'Space Grotesk',sans-serif;letter-spacing:.2em;padding:8px 12px;border-radius:10px}
@@ -98,7 +159,7 @@ aside{flex:0 0 400px;background:var(--panel);border-left:1px solid var(--line);d
 .stat .l{font-size:13px;color:var(--muted)}.stat .v{font:700 24px 'Space Grotesk',sans-serif}
 .stat.g{border-color:var(--gold)}.stat.g .v{color:var(--gold2)}
 .chips{display:flex;justify-content:space-between;gap:6px}
-.chip{width:62px;height:62px;border-radius:50%;font:700 17px 'Space Grotesk',sans-serif;color:#fff;border:5px dashed rgba(255,255,255,.85);transition:transform .1s}
+.chip{width:50px;height:50px;border-radius:50%;font:700 15px 'Space Grotesk',sans-serif;color:#fff;border:5px dashed rgba(255,255,255,.85);transition:transform .1s}
 .chip:active:not(:disabled){transform:translateY(3px)}
 .c1{background:#eceff1;color:#1a1a1a;border-color:#9aa4ad;box-shadow:0 4px 0 #7d868e}
 .c5{background:#d23b3b;box-shadow:0 4px 0 #7d1e1e}
@@ -106,6 +167,8 @@ aside{flex:0 0 400px;background:var(--panel);border-left:1px solid var(--line);d
 .c25{background:#1f9a55;box-shadow:0 4px 0 #0f5c31}
 .c50{background:#1b1b1b;color:var(--gold);border-color:var(--gold);box-shadow:0 4px 0 #000}
 .row2{display:grid;grid-template-columns:1fr 2fr;gap:10px}
+.btn.allin{height:44px;background:var(--panel2);border:2px solid var(--gold);color:var(--gold2);font:700 15px 'Space Grotesk',sans-serif;letter-spacing:.08em}
+.btn.allin:hover:not(:disabled){background:var(--goldbg)}
 .acts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .act{height:92px;border-radius:18px;font:700 24px 'Space Grotesk',sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
 .act span{font:500 12px Inter,sans-serif;opacity:.75}
@@ -125,6 +188,8 @@ aside{flex:0 0 400px;background:var(--panel);border-left:1px solid var(--line);d
 .li .n{flex:1;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .li .s{font-size:12px;color:var(--muted)}
 .li .c{font-size:13px;color:var(--muted);min-width:40px;text-align:right}
+.li .b{font:700 12px 'Space Grotesk',sans-serif;color:var(--gold2);min-width:32px;text-align:right}
+.li .n small{display:block;font-weight:500;font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis}
 .foot{display:flex;gap:10px}.foot .btn{height:42px;flex:1;font-weight:500;color:var(--muted)}
 .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#2a1212;border:1px solid var(--red);color:var(--fg);padding:10px 16px;border-radius:12px;font-size:14px;z-index:9}
 
@@ -137,6 +202,8 @@ aside{flex:0 0 400px;background:var(--panel);border-left:1px solid var(--line);d
   .status{padding:10px 14px}.big1{font-size:20px}.big2{font-size:38px}
   .act{height:64px;font-size:20px}.chip{width:52px;height:52px;font-size:15px}
   .list{flex:none;max-height:none}
+  .dock{position:relative;left:auto;width:auto;margin:6px 12px 0;padding:10px 14px 12px;gap:8px}
+  .dock .dv{font-size:36px}.dock .dres{font-size:24px}.dock .act{height:56px}
 }
 </style></head><body><div id="app"></div>
 <script>
@@ -147,6 +214,8 @@ const CH=[1,5,10,25,50];
 const val=h=>{let t=0,a=0;for(const c of h){const r=c.slice(0,-1);if(r==="A"){a++;t+=11}else if("JQK".includes(r))t+=10;else t+=+r}while(t>21&&a){t-=10;a--}return t};
 let pid=ls.get("bj-pid");if(!pid){pid=Math.random().toString(36).slice(2)+Date.now().toString(36);ls.set("bj-pid",pid)}
 let ws,S=null,err="",joined=false,want=null,shell=false,prevHands={},toastT;
+// chip motion: last seen per-player state (to animate only live transitions), held balances, end-of-round sweep
+let prevP={},prevPhase=null,hold=null,sweep=null;
 
 /* ---------- connection ---------- */
 function send(o){if(ws&&ws.readyState===1)ws.send(JSON.stringify(o))}
@@ -163,7 +232,7 @@ function enter(code,create,name,start){
   if(!name||!code){err="Enter your name and a lobby code.";return render()}
   err="";want={code,name,create,start};connect();
 }
-function leave(){joined=false;want=null;S=null;shell=false;prevHands={};ls.del("bj-code");if(ws)ws.close();render()}
+function leave(){joined=false;want=null;S=null;shell=false;prevHands={};prevP={};prevPhase=null;hold=null;sweep=null;ls.del("bj-code");if(ws)ws.close();render()}
 setInterval(()=>send({t:"ping"}),25000);
 function toast(msg){clearTimeout(toastT);let t=$(".toast");if(!t){t=document.createElement("div");t.className="toast";document.body.appendChild(t)}t.textContent=msg;toastT=setTimeout(()=>t.remove(),2500)}
 
@@ -177,6 +246,65 @@ function seatPos(k,m){
   const th=(m<=1?0:spread-2*spread*(k-1)/(m-1))*Math.PI/180;
   return{x:500+430*Math.sin(th),y:300+340*Math.cos(th),d:false};
 }
+const sign=n=>(n>0?"+":n<0?"−":"")+Math.abs(n);
+// balances stay as they were until the end-of-round chip sweep lands
+const dispChips=p=>hold&&hold.round===S.round&&S.phase==="results"&&Date.now()<hold.until&&hold.m[p.id]!=null?hold.m[p.id]:p.chips;
+const swept=()=>!sweep||sweep.round!==S.round||Date.now()>=sweep.at;
+const DEN=[50,25,10,5,1];
+function pilesHTML(n,max,k){
+  if(!(n>0))return"";
+  const out=[];let r=n;
+  for(const d of DEN){const c=Math.floor(r/d);if(c){out.push([d,c]);r-=c*d}}
+  return`<div class="piles" data-k="${k||"bet"}">${out.slice(0,max||2).map(([d,c])=>`<div class="pile">${`<div class="ck k${d}"></div>`.repeat(Math.min(c,6))}</div>`).join("")}</div>`;
+}
+// bet spot sits between the seat and the table centre
+// (distance grows with the seat's real size so the chips never sit on the cards or the total badge)
+function spotOff(pos,seat){
+  const dx=500-pos.x,dy=330-pos.y,l=Math.hypot(dx,dy)||1,ux=dx/l,uy=dy/l;
+  const hw=Math.max(seat.children[0].offsetWidth,seat.children[1].offsetWidth)/2,hh=seat.offsetHeight/2;
+  const D=Math.min(230,Math.abs(uy)*hh+Math.abs(ux)*hw+58);
+  return{x:ux*D,y:uy*D};
+}
+function spotState(p,isD){
+  if(isD||S.phase==="lobby"||isOut(p))return null;
+  const allin=p.bet>0&&p.bet>=p.chips;
+  if(S.phase==="betting"){
+    if(!p.online||p.chips<1)return null;
+    if(!p.bet)return{a:0,pill:"",pc:"",cls:""};
+    return{a:p.bet,pill:allin?`ALL IN ${p.bet}`:`${p.bet}${p.ready?" ✓":""}`,pc:allin?"gold":p.ready?"green":"",cls:allin?"allin":""};
+  }
+  if(!p.in)return null;
+  if(S.phase==="playing"){
+    if(p.status==="bust")return{a:0,pill:`Bust −${p.bet}`,pc:"red",cls:""};
+    return{a:p.bet,pill:allin?`ALL IN ${p.bet}`:`${p.bet}`,pc:allin?"gold":"",cls:allin?"allin":""};
+  }
+  const r=p.res;if(!r)return null;const done=swept();
+  if(r.dl<0)return{a:0,pill:`${r.o} −${-r.dl}`,pc:"red",cls:""};
+  if(r.dl>0)return{a:done?0:p.bet,b:done?0:r.dl,pill:resText(r),pc:r.owed?"gold":"green",cls:r.owed?"part":"won"};
+  return{a:done?0:p.bet,pill:"Push",pc:"",cls:""};
+}
+function spotHTML(s){
+  if(!s)return"";
+  const both=s.a>0&&s.b>0;
+  return pilesHTML(s.a,both?1:2,"bet")+pilesHTML(s.b,both?1:2,"pay")+(s.pill?`<span class="amt ${s.pc}">${esc(s.pill)}</span>`:"");
+}
+// fly a copy of some chips across the stage (stage coordinates, so it works at any scale)
+function flyChips(html,fromEl,toEl,delay,dur){
+  if(calm()||!html||!fromEl||!toEl)return 0;
+  dur=dur||650;
+  const a=stagePt(fromEl),b=stagePt(toEl),f=document.createElement("div");
+  f.className="flychips";f.innerHTML=html;$("#stage").appendChild(f);
+  f.style.left=(a.x-f.offsetWidth/2)+"px";f.style.top=(a.y-f.offsetHeight/2)+"px";
+  const dx=b.x-a.x,dy=b.y-a.y;
+  f.animate([
+    {transform:"translate(0,0) scale(1)",opacity:1},
+    {transform:`translate(${dx*.5}px,${dy*.5-40}px) scale(1.12)`,opacity:1,offset:.5},
+    {transform:`translate(${dx}px,${dy}px) scale(.92)`,opacity:1,offset:.9},
+    {transform:`translate(${dx}px,${dy}px) scale(.92)`,opacity:0}
+  ],{duration:dur,delay,easing:"cubic-bezier(.45,0,.25,1)",fill:"both"}).onfinish=()=>f.remove();
+  return delay+dur;
+}
+const appearAt=(el,t)=>{if(el&&t>0&&!calm())el.animate([{opacity:0},{opacity:1}],{duration:150,delay:t,fill:"backwards"})};
 function cardHTML(c){
   if(c===null)return`<div class="card down"><div class="face front"></div><div class="face back"></div></div>`;
   const r=c.slice(0,-1),s=c.slice(-1),red=s==="♥"||s==="♦";
@@ -184,7 +312,7 @@ function cardHTML(c){
 }
 
 /* ---------- deck & card motion ---------- */
-let deckGen=0,deckUntil=0;
+let deckGen=0,deckUntil=0,rotateUntil=0;
 const calm=()=>matchMedia("(prefers-reduced-motion: reduce)").matches;
 const stageScale=()=>$("#stage").getBoundingClientRect().width/1000;
 function renderDeck(n){
@@ -209,13 +337,21 @@ function flyFromDeck(el,delay,up){
     {transform:`translate(0,0) rotate(0deg) ${end} scale(1)`,offset:1}
   ],{duration:520,delay,easing:"cubic-bezier(.3,.7,.25,1)",fill:"backwards"}).onfinish=()=>{el.classList.remove("flying");if(!seat.querySelector(".flying"))seat.style.zIndex=""};
 }
+// knocked out = 0 chips. In the round they went out we still show their result first.
+const isOut=p=>p.outRound!=null&&(S.phase!=="results"||!!S.winner||p.outRound<S.round);
+// game over shows once this round's chips have been swept in
+const gameOver=()=>S.phase==="results"&&!!S.winner&&swept();
+const resText=r=>r.owed?`${r.o} +${r.dl} of ${r.owed}`:`${r.o} ${r.dl?sign(r.dl):""}`.trim();
+const resCls=r=>r.owed?"goldt":r.dl>0?"win":r.dl<0?"lose":"";
 function seatStatus(p){
   const d=p.id===S.dealer;
   if(S.phase==="lobby")return{t:p.id===S.host?"Host":"Ready",c:""};
+  if(gameOver())return p.id===S.winner?{t:"Last player with chips",c:"goldt"}:{t:p.outRound!=null?`Out in round ${p.outRound}`:"Out",c:""};
   if(S.phase==="results"&&p.res){
-    if(d)return{t:`Round ${p.res.dl>=0?"+":""}${p.res.dl}`,c:p.res.dl>0?"win":p.res.dl<0?"lose":""};
-    return{t:`${p.res.o} ${p.res.dl?(p.res.dl>0?"+":"")+p.res.dl:""}`,c:p.res.dl>0?"win":p.res.dl<0?"lose":""};
+    if(d)return p.res.bankrupt?{t:"Bankrupt · knocked out",c:"lose"}:{t:`Round ${sign(p.res.dl)}`,c:p.res.dl>0?"win":p.res.dl<0?"lose":""};
+    return{t:resText(p.res),c:resCls(p.res)};
   }
+  if(isOut(p))return{t:"Knocked out · watching",c:""};
   if(d){
     if(S.phase==="betting")return{t:"Waiting for bets",c:""};
     if(S.turn===p.id)return{t:"Playing…",c:"goldt"};
@@ -224,7 +360,8 @@ function seatStatus(p){
   if(S.phase==="betting"){
     if(!p.online)return{t:"Away",c:""};
     if(p.chips<1)return{t:"Out of chips",c:"lose"};
-    if(p.ready)return{t:`Bet locked · ${p.bet}`,c:"win"};
+    if(p.ready)return{t:p.bet>=p.chips?"All in · locked":`Bet locked · ${p.bet}`,c:"win"};
+    if(p.bet&&p.bet>=p.chips)return{t:`All in · ${p.bet}`,c:"goldt"};
     return{t:p.bet?`Betting · ${p.bet}`:"Choosing bet…",c:"goldt"};
   }
   if(!p.in)return{t:"Sits out",c:""};
@@ -237,7 +374,8 @@ function seatStatus(p){
 function render(){
   if(!S){shell=false;return renderEntry()}
   if(!shell)buildShell();
-  renderConsole();fit();renderTable(); // stage must be scaled before card positions are measured
+  beginSettle();
+  renderConsole();renderDock();fit();renderTable(); // stage must be scaled (and the dock sized) before positions are measured
 }
 function renderEntry(){
   $("#app").innerHTML=`<div class="entry"><div class="box">
@@ -264,29 +402,38 @@ function buildShell(){
       <text font-family="Inter,sans-serif" font-size="15" letter-spacing="3" fill="rgba(255,255,255,.4)"><textPath href="#arcB" startOffset="50%" text-anchor="middle">DEALER MUST STAND ON ALL 17s</textPath></text></svg>
       </div>
     <div class="deck" id="deckpile"><div class="slot"></div><div id="layers"></div><div class="count" id="dcount"></div></div>
+    <div class="pool" id="pool"></div>
     <div class="center" id="center"></div><div id="seats"></div>
-  </div></div></section>
+  </div></div><div class="dock" id="dock" hidden></div></section>
   <aside id="console" aria-label="Console"></aside></div>`;
 }
 function fit(){
   const box=$(".stagebox"),st=$("#stage");if(!box||!st)return;
   const s=Math.min(box.clientWidth/1000,box.clientHeight/730);
   st.style.transform=`translate(-50%,-50%) scale(${s})`;
+  // desktop: the dock floats on the felt, just under the dealer; phone: it sits in the flow under the table
+  const d=$("#dock");if(!d)return;
+  if(matchMedia("(max-width:860px)").matches){d.style.top="";d.style.transform="";return}
+  d.style.top=(box.offsetTop+box.clientHeight/2+(250-365)*s)+"px";
+  d.style.transform=`translateX(-50%) scale(${Math.max(s,.8)})`;
 }
 addEventListener("resize",fit);
 
 function renderTable(){
-  $("#rnd").textContent=S.phase==="lobby"?"Lobby":`Round ${S.round}`;
+  $("#rnd").textContent=S.phase==="lobby"?"Lobby":gameOver()?"Game over":`Round ${S.round}`;
   const did=dealerId(),ps=S.players,n=ps.length,di=Math.max(0,ps.findIndex(p=>p.id===did));
   const holder=$("#seats"),seen=new Set(),flights=[],flips=[],slides=[],tots=[];
+  const busts=[],losers=[],winners=[],poolHad=!!$("#pool .piles");
   ps.forEach((p,i)=>{
     seen.add(p.id);
     let el=holder.querySelector(`[data-id="${p.id}"]`);
-    if(!el){el=document.createElement("div");el.className="seat";el.dataset.id=p.id;el.innerHTML=`<div class="hand"></div><div class="plate"></div>`;holder.appendChild(el)}
+    if(!el){el=document.createElement("div");el.className="seat";el.dataset.id=p.id;el.innerHTML=`<div class="hand"></div><div class="plate"></div><div class="spot none"></div>`;holder.appendChild(el)}
     const k=(i-di+n)%n,pos=seatPos(k,n-1),isD=k===0,mine=p.id===S.me,turn=S.turn===p.id;
+    if(el.style.left&&(el.style.left!==pos.x+"px"||el.style.top!==pos.y+"px"))rotateUntil=Date.now()+900;
     el.style.left=pos.x+"px";el.style.top=pos.y+"px";
     el.classList.toggle("dealerseat",isD);el.classList.toggle("off",!p.online);
-    const handEl=el.firstElementChild,plateEl=el.lastElementChild;
+    el.classList.toggle("out",isOut(p)&&p.id!==S.winner);el.classList.toggle("me",mine);
+    const handEl=el.children[0],plateEl=el.children[1],spotEl=el.children[2];
     handEl.classList.toggle("big",isD||mine);
     // cards: only rebuild a hand when it actually changed, so in-flight animations survive unrelated updates
     const prev=prevHands[p.id]||[];
@@ -307,44 +454,195 @@ function renderTable(){
       const t=handEl.querySelector(".tot");if(t&&added.length)tots.push({el:t,last:added[added.length-1]});
     }
     prevHands[p.id]=p.hand.slice();
+    // bet spot: the chips on the felt in front of this seat
+    const ss=spotState(p,isD);
+    spotEl.className=`spot ${ss?ss.cls:"none"} ${mine&&ss?"mine":""}`;
+    if(!isD){const o=spotOff(pos,el);spotEl.style.left=`calc(50% + ${o.x}px)`;spotEl.style.top=`calc(50% + ${o.y}px)`}
+    const sh=spotHTML(ss);if(spotEl._h!==sh){spotEl.innerHTML=sh;spotEl._h=sh}
+    // chip motion is only for transitions seen live in this round (not on reconnect / first paint)
+    const was=prevP[p.id],live=was&&was.round===S.round&&!isD;
+    if(live&&S.phase==="playing"&&was.phase==="playing"&&p.status==="bust"&&was.status!=="bust")busts.push({spot:spotEl,bet:p.bet});
+    if(live&&settling&&p.in&&p.res){
+      if(p.res.dl<0&&was.status!=="bust")losers.push({spot:spotEl,bet:p.bet});
+      else if(p.res.dl>0)winners.push({spot:spotEl,dl:p.res.dl});
+    }
     const st=seatStatus(p);
-    const tags=isD?`<span class="tag">${S.phase==="lobby"?"FIRST DEALER":"DEALER"}</span><br>`:(p.id===S.next?`<span class="tag o">NEXT DEALER</span><br>`:"");
-    const ph=`${tags}<div class="pn">${esc(p.name)}${mine?"<i>YOU</i>":""}</div>
-      ${st.t?`<div class="ps ${st.c}">${esc(st.t)}</div>`:""}<div class="pc">${p.chips} chips</div>`;
-    plateEl.className=`plate ${mine?"mine":""} ${turn?"turn":""}`;
+    const over=gameOver(),broke=isD&&S.phase==="results"&&p.res&&p.res.bankrupt;
+    const tags=over?(p.id===S.winner?`<span class="tag champ">WINNER</span><br>`:""):
+      broke?`<span class="tag red">BANKRUPT</span><br>`:
+      isD?`<span class="tag">${S.phase==="lobby"?"FIRST DEALER":"DEALER"}</span><br>`:
+      isOut(p)?`<span class="tag out">OUT</span><br>`:
+      (p.id===S.next?`<span class="tag o">NEXT DEALER</span><br>`:"");
+    const ph=`${mine?`<span class="me-badge">YOU</span>`:""}${tags}<div class="pn">${esc(p.name)}</div>
+      ${st.t?`<div class="ps ${st.c}">${esc(st.t)}</div>`:""}<div class="pc">${dispChips(p)} chips</div>`;
+    plateEl.className=`plate ${mine?"mine":""} ${turn?"turn":""} ${broke?"broke":""} ${over&&p.id===S.winner?"champ":""}`;
     if(plateEl._h!==ph){plateEl.innerHTML=ph;plateEl._h=ph}
   });
   holder.querySelectorAll(".seat").forEach(el=>{if(!seen.has(el.dataset.id))el.remove()});
+  renderPool();
   // motion: cards leave the deck clockwise from the dealer's left, dealer last, one pass at a time
   $("#deckpile").style.visibility=S.phase==="lobby"?"hidden":"";
   if(calm()||!flights.length){if(calm()||Date.now()>deckUntil){deckGen++;renderDeck(S.deck)}} // don't cut a running deal's countdown short
   else{
     flights.sort((a,b)=>a.j-b.j||(a.k||1e3)-(b.k||1e3));
-    const gap=170,gen=++deckGen;let left=S.deck+flights.length;renderDeck(left);deckUntil=Date.now()+flights.length*gap;
-    flights.forEach((f,i)=>{f.delay=i*gap;flyFromDeck(f.el,f.delay,f.up);setTimeout(()=>{if(gen===deckGen)renderDeck(--left)},f.delay)});
+    const gap=170,gen=++deckGen,wait=calm()?0:Math.max(0,rotateUntil-Date.now());let left=S.deck+flights.length;renderDeck(left);deckUntil=Date.now()+wait+flights.length*gap;
+    flights.forEach((f,i)=>{f.delay=wait+i*gap;
+      if(wait){f.el.style.visibility="hidden";setTimeout(()=>{f.el.style.visibility="";if(f.el.isConnected)flyFromDeck(f.el,i*gap,f.up)},wait)}else flyFromDeck(f.el,f.delay,f.up);setTimeout(()=>{if(gen===deckGen)renderDeck(--left)},f.delay)});
     tots.forEach(t=>t.el.animate([{opacity:0},{opacity:1}],{duration:200,delay:t.last.delay+480,fill:"backwards"}));
   }
   const s=stageScale();
   slides.forEach(({el,x})=>{const dx=(x-el.getBoundingClientRect().left)/s;if(dx&&!calm())el.animate([{translate:`${dx}px 0`},{translate:"0 0"}],{duration:300,easing:"ease-out"})});
   flips.forEach((el,i)=>el.animate([{transform:"rotateY(180deg)"},{transform:"rotateY(0deg)"}],{duration:calm()?1:500,delay:i*120,easing:"ease",fill:"backwards"}));
+  // chips: a bust slides to the dealer pool once the busting card has landed
+  const pool=$("#pool"),dealt=Math.max(0,deckUntil-Date.now());
+  if(busts.length){
+    let end=0;busts.forEach((b,i)=>{end=Math.max(end,flyChips(pilesHTML(b.bet,2),b.spot,pool,dealt+250+i*150))});
+    if(!poolHad)appearAt(pool.querySelector(".piles"),end);
+  }
+  // round settled: losses go to the pool, then the dealer pays each winner, then everything is swept in
+  if(settling){
+    settling=false;
+    const base=dealt+600;let end=0;
+    losers.forEach((x,i)=>{end=Math.max(end,flyChips(pilesHTML(x.bet,2),x.spot,pool,base+i*150))});
+    if(losers.length&&!poolHad)appearAt(pool.querySelector(".piles"),end);
+    const payAt=base+(losers.length?losers.length*150+350:0);end=Math.max(end,payAt);
+    winners.forEach((x,i)=>{const t=flyChips(pilesHTML(x.dl,2,"pay"),pool,x.spot,payAt+i*150);appearAt(x.spot.querySelector('[data-k="pay"]'),t);end=Math.max(end,t)});
+    const sweepT=end+1500,r=S.round;
+    hold.until=sweep.at=Date.now()+sweepT+640;
+    setTimeout(()=>sweepChips(r),sweepT);
+  }
+  prevPhase=S.phase;
+  ps.forEach(p=>{prevP[p.id]={round:S.round,phase:S.phase,status:p.status,chips:p.chips}});
   const c=$("#center");
   if(S.phase==="lobby")c.innerHTML=`Waiting for players<small>The host starts when everyone has joined</small>`;
-  else if(S.phase==="betting")c.innerHTML=`Place your bets<small>${esc(nameOf(S.dealer))} is dealing</small>`;
+  else if(S.phase==="betting"){const outs=S.players.filter(isOut);c.innerHTML=`Place your bets<small>${esc(nameOf(S.dealer))} is dealing${outs.length===1?` · ${esc(outs[0].name)} is out of chips and sits this one out`:outs.length?` · ${outs.length} players are out of chips`:""}</small>`}
   else if(S.phase==="playing")c.innerHTML=S.turn===S.me?`Your turn`:`${esc(nameOf(S.turn))}’s turn<small>${S.turn===S.dealer?"Dealer plays last":"Cards flip as each turn starts"}</small>`;
   else c.innerHTML=`Round over<small>${esc(nameOf(S.next))} moves into the dealer chair next</small>`;
 }
+// end of round: winners' chips go back to their plate, the pool goes to the dealer, then balances update
+function sweepChips(r){
+  if(!S||S.round!==r||S.phase!=="results")return;
+  document.querySelectorAll("#seats .seat").forEach(el=>{
+    const sp=el.children[2],pl=[...sp.querySelectorAll(".piles")];if(!pl.length)return;
+    flyChips(`<div class="piles">${pl.map(x=>x.innerHTML).join("")}</div>`,sp,el.children[1],0,600);
+    pl.forEach(x=>x.style.visibility="hidden");
+  });
+  const pp=$("#pool .piles"),dp=$(`#seats .seat[data-id="${S.dealer}"] .plate`);
+  if(pp&&dp&&!S.share)flyChips(pp.outerHTML,$("#pool"),dp,0,600); // a bankrupt dealer's bank was all paid out
+  if(pp)pp.style.visibility="hidden";
+  setTimeout(()=>{if(S)render()},660);
+}
+// called before anything renders, so the held balances apply to the panel and the plates alike
+let settling=false;
+function beginSettle(){
+  settling=false;
+  if(prevPhase!=="playing"||S.phase!=="results"||calm())return;
+  if(!Object.values(prevP).some(x=>x.round===S.round))return;
+  const m={};S.players.forEach(p=>{const x=prevP[p.id];if(x&&x.round===S.round)m[p.id]=x.chips});
+  hold={round:S.round,until:Infinity,m};sweep={round:S.round,at:Infinity};settling=true;
+}
+function renderPool(){
+  const el=$("#pool");
+  if(S.phase==="lobby"){el.style.display="none";return}
+  el.style.display="";
+  let h;
+  if(S.phase==="playing"){
+    const bs=S.players.filter(p=>p.in&&p.id!==S.dealer&&p.status==="bust"),sum=bs.reduce((a,p)=>a+p.bet,0);
+    h=sum?`<div class="kicker">DEALER POOL</div>${pilesHTML(sum,3,"pool")}<div class="pv">${sum} <span>from ${bs.length===1?esc(bs[0].name):bs.length+" busts"}</span></div>`
+      :`<div class="kicker">DEALER POOL</div><div class="pe">Lost bets slide here</div>`;
+  }else if(S.phase==="results"&&S.share){
+    const sh=S.share,done=swept();
+    h=`<div class="kicker">BANK SHARED OUT</div>${done?`<div class="pe">Dealer is out of chips</div>`:pilesHTML(sh.bank,3,"pool")}
+      <div class="pv">${sh.bank} <span>= ${sh.dealerChips} chips + ${sh.lost} lost</span></div>`;
+  }else if(S.phase==="results"){
+    const ps=S.players.filter(p=>p.in&&p.res&&p.id!==S.dealer);
+    const lost=ps.reduce((a,p)=>a+(p.res.dl<0?-p.res.dl:0),0),paid=ps.reduce((a,p)=>a+(p.res.dl>0?p.res.dl:0),0),done=swept();
+    h=`<div class="kicker">${paid&&!done?"DEALER PAYS OUT":"DEALER POOL"}</div>${done?`<div class="pe">Round settled</div>`:pilesHTML(lost,3,"pool")}
+      <div class="pv">${lost} <span>won</span>${paid?` · ${paid} <span>paid</span>`:""}</div>`;
+  }else h=`<div class="kicker">DEALER POOL</div><div class="pe">Lost bets slide here</div>`;
+  el.classList.toggle("broke",S.phase==="results"&&!!S.share);
+  el.style.visibility=gameOver()?"hidden":"";
+  if(el._h!==h){el.innerHTML=h;el._h=h}
+}
+// the dock on the felt: Hit/Stand on your turn, the result and "Deal next round" at the end
+function renderDock(){
+  const d=$("#dock");if(!d)return;
+  const me=P(S.me)||{},amD=S.dealer===S.me;let h="",cls="";
+  if(S.phase==="playing"&&S.turn===S.me){
+    const v=val(me.hand),dl=P(S.dealer),up=!amD&&dl&&dl.hand[0]?dl.hand[0]:null;
+    h=`<div class="dh"><div class="dv">${v}</div><div><div class="kicker">YOUR TURN</div>
+      <div class="sub" style="margin:0">${amD?"Dealer hand · you must hit until 17":`vs dealer <b style="color:var(--fg)">${up?val([up]):"?"}</b>${up?"":" (face down)"} · bet ${me.bet}`}</div></div></div>
+      <div class="acts"><button class="act hit" id="hit">HIT<span>Take a card · H</span></button>
+      <button class="act stand" id="stand" ${amD&&v<17?"disabled":""}>STAND<span>Keep ${v} · S</span></button></div>`;
+  }else if(gameOver()){
+    const w=P(S.winner),host=S.host===S.me;
+    cls="over";
+    h=`<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#e3b84f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3"/><path d="M7 5H4v2a3 3 0 0 0 3 3"/></svg>
+      <div class="kicker">GAME OVER</div>
+      <div class="dtitle">${w?(w.id===S.me?"You win the table":`${esc(w.name)} wins the table`):"Nobody has chips left"}</div>
+      <div class="sub" style="margin:0">Everyone else is out of chips${w?` · ${w.chips} chips after ${S.round} round${S.round===1?"":"s"}`:""}</div>
+      ${host?`<button class="btn gold w" id="greset">Reset game · everyone back to ${S.start}</button>`:`<div class="sub" style="margin:0">Waiting for the host to reset</div>`}`;
+  }else if(S.phase==="results"){
+    const r=me.res,dp=P(S.dealer),dv=dp?val(dp.hand):0,sh=S.share;
+    const head=!dp?"":dv>21?` · DEALER BUSTS WITH ${dv}`:dp.status==="bj"?" · DEALER HAS BLACKJACK":` · DEALER HAS ${dv}`;
+    let title="You sat out";
+    if(r)title=amD?(r.bankrupt?"You went bankrupt":`Dealer ${sign(r.dl)}`):r.owed?`You win +${r.dl} of ${r.owed}`:r.o==="Win"?`You win ${sign(r.dl)}`:r.o==="Lose"?`You lose ${sign(r.dl)}`:r.o==="Push"?"Push":`${r.o} ${sign(r.dl)}`;
+    cls=r?(r.owed?"":r.dl>0?"good":r.dl<0||r.bankrupt?"bad":""):"";
+    const dOut=dp&&dp.chips<1?` · ${esc(dp.name)} is knocked out`:"";
+    h=`<div class="kicker">ROUND OVER${esc(head)}</div>
+      ${sh?`<div class="banner"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff9d8f" stroke-width="2" aria-hidden="true"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><span><b>Dealer is bankrupt.</b> Payouts were shared.</span></div>`:""}
+      <div class="dh"><div class="dres ${r?(r.owed?"goldt":r.dl>0?"win":r.dl<0||r.bankrupt?"lose":""):""}">${esc(title)}</div>
+      ${r?`<div class="sub" style="margin:0">Balance ${me.chips-r.dl} → ${me.chips}</div>`:""}</div>
+      ${S.winner?`<div class="sub" style="margin:0;text-align:center">Only one player has chips left…</div>`:`<button class="btn gold w" id="next">Deal next round</button>
+      <div class="sub" style="margin:0;text-align:center">${S.next?`${esc(nameOf(S.next))} deals next`:"Waiting for players"}${dOut}</div>`}`;
+  }
+  d.hidden=!h;d.className=`dock ${cls}`;
+  if(d._h!==h){d.innerHTML=h;d._h=h}
+  $("#center").style.visibility=h?"hidden":"";
+  const on=(id,f)=>{const e=d.querySelector("#"+id);if(e)e.onclick=f};
+  on("hit",()=>send({t:"hit"}));on("stand",()=>send({t:"stand"}));on("next",()=>send({t:"next"}));
+  on("greset",()=>send({t:"reset"}));
+}
 
+function standingsHTML(){
+  // winner first, then whoever lasted longest
+  const ord=[...S.players].sort((a,b)=>(b.id===S.winner)-(a.id===S.winner)||(b.outRound??1e9)-(a.outRound??1e9)||b.chips-a.chips);
+  return`<div class="lh">FINAL STANDINGS</div>`+ord.map((p,i)=>{
+    const champ=p.id===S.winner;
+    return`<div class="li ${champ?"champ":""} ${p.id===S.me?"me":""}"><div class="rk">${i+1}</div>
+    <div class="n">${esc(p.name)}${p.id===S.me?" (you)":""}<small class="${champ?"goldt":""}">${champ?"Winner":p.outRound!=null?`Out in round ${p.outRound}`:"Still had chips"}</small></div>
+    <span class="c" style="font:700 14px 'Space Grotesk',sans-serif;${champ?"color:var(--gold2)":""}">${p.chips}</span></div>`}).join("");
+}
 function listHTML(){
+  if(gameOver())return standingsHTML();
   const did=dealerId(),ps=S.players,n=ps.length,di=Math.max(0,ps.findIndex(p=>p.id===did));
   const ord=[...Array(n)].map((_,k)=>ps[(di+k)%n]);
   return`<div class="lh">AT THE TABLE · CLOCKWISE</div>`+ord.map(p=>{
     const st=seatStatus(p),isD=p.id===did;
-    const tag=isD?`<span class="tag" style="margin:0">DEALER</span>`:p.id===S.next?`<span class="tag o" style="margin:0">NEXT</span>`:"";
-    return`<div class="li ${p.id===S.me?"me":""}" style="${p.online?"":"opacity:.5"}"><div class="av ${isD?"d":""}">${esc(p.name[0]||"?")}</div>
-    <div class="n">${esc(p.name)}${p.id===S.me?" (you)":""}</div>${tag}<span class="s ${st.c}">${esc(st.t)}</span><span class="c">${p.chips}</span></div>`}).join("");
+    const tag=isD&&S.phase==="results"&&p.res&&p.res.bankrupt?`<span class="tag red" style="margin:0">BANKRUPT</span>`:
+      isD?`<span class="tag" style="margin:0">DEALER</span>`:isOut(p)?`<span class="tag out" style="margin:0">OUT</span>`:
+      p.id===S.next?`<span class="tag o" style="margin:0">NEXT</span>`:"";
+    let bet="",bc="";
+    if(S.phase==="results"&&p.res&&!isD){bet=p.res.dl?sign(p.res.dl):"0";bc=resCls(p.res)}
+    else if(S.phase==="results"&&p.res&&isD){bet=sign(p.res.dl);bc=p.res.dl>0?"win":p.res.dl<0?"lose":""}
+    else if((S.phase==="betting"||p.in)&&p.bet&&!isD)bet=p.bet;
+    return`<div class="li ${p.id===S.me?"me":""}" style="${p.online&&!isOut(p)?"":"opacity:.5"}"><div class="av ${isD?"d":""}">${esc(p.name[0]||"?")}</div>
+    <div class="n">${esc(p.name)}${p.id===S.me?" (you)":""}${st.t?`<small class="${st.c}">${esc(st.t)}</small>`:""}</div>${tag}<span class="b ${bc}">${bet}</span><span class="c">${dispChips(p)}</span></div>`}).join("");
+}
+// bankrupt round: show how the bank was shared (same rule as the server's Table.share)
+function shareHTML(sh){
+  const n=sh.rows.length,half=Math.floor(sh.bank/2),each=Math.max(1,Math.floor(half/n));
+  const how=sh.bank<n?`Not enough chips for everyone: <b>1 chip each</b>, best hand first`
+    :`1 · Half (${half}) split equally: <b>${each} each</b><br>2 · The rest by best hand; ties split equally`;
+  const rows=[...sh.rows].sort((a,b)=>b.rank-a.rank);
+  return`<div class="bkt"><div class="kicker">HOW THE ${sh.bank} WAS SHARED</div><div class="how">${how}</div>
+    <div class="bkr h"><span>PLAYER</span><span>HAND</span><span>OWED</span><span>PAID</span></div>
+    ${rows.map(w=>`<div class="bkr ${w.id===S.me?"me":""}"><span>${esc(nameOf(w.id))}${w.id===S.me?" (you)":""}</span><span>${w.rank===22?"BJ":w.rank}</span><span>${w.owed}</span>
+    <span><b class="${w.paid>=w.owed?"win":"goldt"}">${w.paid}</b></span></div>`).join("")}</div>`;
 }
 function renderConsole(){
   const me=P(S.me)||{},host=S.host===S.me,amD=S.dealer===S.me;
+  const stats=(l2,v2,c2)=>`<div class="stats"><div class="stat"><div class="l">Balance</div><div class="v">${dispChips(me)}</div></div><div class="stat ${c2||"g"}"><div class="l">${l2}</div><div class="v">${v2}</div></div></div>`;
   let main="";
   if(S.phase==="lobby"){
     const on=S.players.filter(p=>p.online).length;
@@ -353,43 +651,48 @@ function renderConsole(){
     ${host?`<button class="btn gold w" id="start" ${on<2?"disabled":""}>${on<2?"Waiting for a 2nd player…":"Start game"}</button>`:`<div class="sub">Waiting for the host to start…</div>`}`;
   }else if(S.phase==="betting"&&amD){
     const b=S.players.filter(p=>p.online&&p.id!==S.dealer&&p.chips>=1),r=b.filter(p=>p.ready).length;
-    main=`<div class="status hot"><div class="kicker">YOU’RE THE DEALER</div><div class="big1">Waiting for bets</div>
+    main=`<div class="status hot"><div class="kicker">ROUND ${S.round} · YOU’RE THE DEALER</div><div class="big1">Waiting for bets</div>
     <div class="sub">${r} of ${b.length} bets locked${S.msg?" · "+esc(S.msg):""}</div><div class="bar"><div style="width:${b.length?100*r/b.length:0}%"></div></div></div>
     <div class="card-p" style="padding:14px"><div style="font-weight:600">Your first card</div><div class="sub" style="margin:0">Should players see it while they play?</div>
     <div class="seg"><button id="fd" class="${S.showFirst?"":"on"}">Face down</button><button id="fu" class="${S.showFirst?"on":""}">Face up</button></div></div>`;
   }else if(S.phase==="betting"){
     const locked=me.ready,left=me.chips-me.bet,b=S.players.filter(p=>p.online&&p.id!==S.dealer&&p.chips>=1),r=b.filter(p=>p.ready).length;
-    if(me.chips<1)main=`<div class="status"><div class="kicker">BETTING</div><div class="big1">You’re out of chips</div><div class="sub">Sit this one out, or ask the host to reset.</div></div>`;
-    else main=`<div class="status ${locked?"":"hot"}"><div class="kicker">BETTING</div><div class="big1">${locked?"Bet locked":"Place your bet"}</div>
+    const allin=me.bet>0&&me.bet>=me.chips;
+    if(me.chips<1)main=`<div class="status"><div class="kicker">ROUND ${S.round} · BETTING</div><div class="big1">You’re knocked out</div><div class="sub">You’re out of chips, so you watch from here. The host can reset the game.</div></div>`;
+    else main=`<div class="status ${locked?"":"hot"}"><div class="kicker">ROUND ${S.round} · BETTING</div><div class="big1">${locked?(allin?"All in · locked":"Bet locked"):"Place your bet"}</div>
     <div class="sub">${esc(nameOf(S.dealer))} is dealing · ${r} of ${b.length} bets locked</div><div class="bar"><div style="width:${b.length?100*r/b.length:0}%"></div></div></div>
-    <div class="stats"><div class="stat"><div class="l">Balance</div><div class="v">${me.chips}</div></div><div class="stat g"><div class="l">Current bet</div><div class="v">${me.bet}</div></div></div>
+    ${stats(allin?"All in":"Current bet",me.bet)}
     ${locked?`<div class="sub">Cards are dealt face down once everyone locks in. Your card flips when your turn comes.</div>`:`
     <div class="chips">${CH.map(v=>`<button class="chip c${v}" data-bet="${v}" aria-label="Add ${v}" ${v>left?"disabled":""}>${v}</button>`).join("")}</div>
+    <button class="btn allin w" id="allin" ${allin?"disabled":""}>ALL IN · ${me.chips}</button>
     <div class="row2"><button class="btn ghost" id="clear" ${me.bet?"":"disabled"}>Clear</button><button class="btn gold" id="ready" ${me.bet?"":"disabled"}>Lock bet${me.bet?" · "+me.bet:""}</button></div>`}`;
   }else if(S.phase==="playing"&&S.turn===S.me){
-    const v=val(me.hand),d=P(S.dealer),up=!amD&&d&&d.hand[0]?d.hand[0]:null;
-    main=`<div class="status hot"><div class="kicker">YOUR TURN</div>
-    <div style="display:flex;align-items:baseline;gap:12px;margin-top:6px"><div class="big2">${v}</div><div class="sub">${amD?"dealer hand":`vs dealer <b style="color:var(--fg)">${up?val([up]):"?"}</b>${up?"":" (face down)"}`}</div></div>
-    <div class="sub">${amD?"You must hit until you reach 17.":`Bet ${me.bet} · win pays ${me.bet}`}</div></div>
-    <div class="acts"><button class="act hit" id="hit">HIT<span>Take a card · H</span></button>
-    <button class="act stand" id="stand" ${amD&&v<17?"disabled":""}>STAND<span>Keep ${v} · S</span></button></div>`;
+    main=`<div class="status hot"><div class="kicker">ROUND ${S.round} · YOUR TURN</div><div class="big1">Hit or Stand on the table</div>
+    <div class="sub">Keys: H to hit · S to stand</div></div>${amD?"":stats("Bet this round",me.bet)}`;
   }else if(S.phase==="playing"){
-    const note=!me.in?"You’re sitting out this round.":!me.revealed?"Your card is face down until your turn.":me.status==="bust"?"You busted this round.":"Your turn is done.";
-    main=`<div class="status"><div class="kicker">PLAYING</div><div class="big1">${esc(nameOf(S.turn))}’s turn</div><div class="sub">${note}</div></div>`;
+    const note=!me.in?"You’re sitting out this round.":!me.revealed&&!amD?"Your card is face down until your turn.":me.status==="bust"?"You busted this round.":amD?"You play last.":"Your turn is done.";
+    main=`<div class="status"><div class="kicker">ROUND ${S.round} · PLAYING</div><div class="big1">${esc(nameOf(S.turn))}’s turn</div><div class="sub">${note}</div></div>
+    ${me.in&&!amD?stats("Bet this round",me.bet):""}`;
+  }else if(gameOver()){
+    const w=P(S.winner),rank=[...S.players].sort((a,b)=>(b.id===S.winner)-(a.id===S.winner)||(b.outRound??1e9)-(a.outRound??1e9)||b.chips-a.chips).findIndex(p=>p.id===S.me)+1;
+    const nth=n=>n+(n%10===1&&n!==11?"st":n%10===2&&n!==12?"nd":n%10===3&&n!==13?"rd":"th");
+    main=`<div class="status hot"><div class="kicker">GAME OVER</div><div class="big1">${w?(w.id===S.me?"You win the table":`${esc(w.name)} wins the table`):"Game over"}</div>
+    <div class="sub">${S.winner===S.me?`${me.chips} chips after ${S.round} rounds`:`You finished ${nth(rank)}${me.outRound!=null?` · out in round ${me.outRound}`:""}`}</div></div>`;
   }else{
-    const r=me.res;
-    main=`<div class="status ${r&&r.dl>0?"hot":""}"><div class="kicker">ROUND OVER</div>
-    <div class="big1 ${r?(r.dl>0?"win":r.dl<0?"lose":""):""}">${r?(amD?`Dealer ${r.dl>=0?"+":""}${r.dl}`:`${esc(r.o)} ${r.dl?(r.dl>0?"+":"")+r.dl:""}`):"You sat out"}</div>
-    <div class="sub">Balance ${me.chips} · next dealer: ${esc(nameOf(S.next))}</div></div>
-    <button class="btn gold w" id="next">Deal next round</button>`;
+    const r=me.res,sh=S.share,dp=P(S.dealer);
+    const title=r?(amD?(r.bankrupt?"You went bankrupt":`Dealer ${sign(r.dl)}`):esc(resText(r))):"You sat out";
+    main=`<div class="status ${sh?"broke":r&&r.dl>0?"hot":""}"><div class="kicker">ROUND ${S.round} · ${sh?"DEALER BANKRUPT":"RESULTS"}</div>
+    <div class="big1 ${r?(amD&&r.bankrupt?"lose":resCls(r)):""}">${sh?`Winners were owed ${sh.owed}, the bank had ${sh.bank}`:title}</div>
+    <div class="sub">${sh&&dp?`${esc(dp.name)} is knocked out · `:""}${S.next?`Next dealer: ${esc(nameOf(S.next))}`:""}</div></div>
+    ${sh?shareHTML(sh):r?stats("This round",r.owed?`+${r.dl} of ${r.owed}`:sign(r.dl),r.dl>0?"g":""):""}`;
   }
   $("#console").innerHTML=`<div class="chead"><div class="t">Blackjack Night</div>
   <button class="code" id="copy" aria-label="Copy lobby code">${esc(want?.code)}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a9bcb1" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
   ${S.off?`<div class="err">Reconnecting…</div>`:""}${main}<div class="list">${listHTML()}</div>
   <div class="foot"><button class="btn ghost" id="leave">Leave lobby</button>${host&&S.phase!=="lobby"?`<button class="btn ghost" id="reset">Reset game</button>`:""}</div>`;
-  const on=(id,f)=>{const e=$("#"+id);if(e)e.onclick=f};
-  on("start",()=>send({t:"start"}));on("next",()=>send({t:"next"}));on("hit",()=>send({t:"hit"}));on("stand",()=>send({t:"stand"}));
-  on("clear",()=>send({t:"clear"}));on("ready",()=>send({t:"ready"}));on("leave",leave);
+  const on=(id,f)=>{const e=$("#console #"+id);if(e)e.onclick=f};
+  on("start",()=>send({t:"start"}));
+  on("clear",()=>send({t:"clear"}));on("ready",()=>send({t:"ready"}));on("allin",()=>send({t:"allin"}));on("leave",leave);
   on("fd",()=>send({t:"dshow",show:false}));on("fu",()=>send({t:"dshow",show:true}));
   on("reset",()=>{if(confirm("Reset everyone’s chips and go back to the lobby?"))send({t:"reset"})});
   on("copy",()=>{try{navigator.clipboard.writeText(want.code).then(()=>toast("Code copied"),()=>toast("Code: "+want.code))}catch(e){toast("Code: "+want.code)}});
